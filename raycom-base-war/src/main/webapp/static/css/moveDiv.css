@@ -1,0 +1,40 @@
+
+.moveBar { 
+width: 250px; 
+height: 300px; 
+background: #666; 
+border: solid 1px #E3E3E3; 
+} 
+
+#banner { 
+background: #EAEAEA;
+cursor: move; 
+} 
+
+.mydiv{
+	background-color:#F5F5F5;
+	right: 10%;
+	top: 1%;
+	bottom:99%;
+	position: absolute;
+	width: 300px;
+	height: 400px;
+	margin-top: -5%;
+	margin-right: -10%;
+	z-index: 999;
+	
+}
+
+#add {
+	 position:absolute;
+	 margin-left:auto;
+	 margin-right:auto;
+	 width:800px;
+	 height:294px;
+	 z-index:9999;
+	 overflow: scroll;
+	 cursor: move; 
+	 right: 10%;
+	 top: 1%;
+	 bottom:99%;
+}

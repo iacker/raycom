@@ -1,0 +1,73 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+	<parent>  
+        <groupId>io.raycom</groupId>
+  		<artifactId>raycom-parent-pom</artifactId>
+  		<version>2.0.0_20170830</version> 
+        <relativePath>../raycom-parent-pom/pom.xml</relativePath>  
+    </parent>
+<raycom_common.version>1.0.0_20170828</raycom_common.version> 
+		<raycom_components.version>1.0.0_20170828</raycom_components.version> 
+		
+  <artifactId>raycom-system</artifactId>
+  <packaging>jar</packaging>
+  
+      <dependencies>
+		<dependency>
+			<groupId>io.raycom</groupId>
+		  	<artifactId>raycom-common</artifactId>
+	  		<raycom_common.version>1.0.0_20170828</raycom_common.version> 
+	  	</dependency>
+	  	<dependency>  
+		    <groupId>io.raycom</groupId>
+		  	<artifactId>raycom-common</artifactId>
+		    <raycom_components.version>1.0.0_20170828</raycom_components.version> 
+		</dependency>  
+	</dependencies>
+  
+  <distributionManagement>
+        <repository>
+            <id>release</id>
+            <name>cdc-plugin-respository</name>
+            <url>http://139.196.191.0:8888/repository/maven-releases/</url>
+        </repository>
+    </distributionManagement>
+    
+    
+	<profiles>
+		 <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>               
+                <build.profile.id>dev</build.profile.id>
+            </properties>
+            <build>
+                <resources>    
+	                <resource>  
+		                <directory>src/main/java</directory>  
+		                <includes>  
+		                    <include>**/*.properties</include>  
+		                    <include>**/*.xml</include>  
+		                    <include>**/*.dtd</include>  
+		                </includes>  
+		                <filtering>false</filtering>  
+		            </resource>                 
+	                <resource>  
+		                <directory>src/main/resources</directory>  
+		                <includes>  
+		                    <include>**/*.properties</include>  
+		                    <include>**/*.xml</include>  
+		                    <include>**/*.dtd</include>  
+		                </includes>  
+		                <filtering>false</filtering>  
+		            </resource>                 
+                </resources>
+            </build>
+        </profile>
+	</profiles>
+	
+</project>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>  
+        <groupId>io.raycom</groupId>
+  		<artifactId>raycom_parent_pom</artifactId>
+  		<version>1.0.0_20170828</version> 
+        <relativePath>../raycom_parent_pom/pom.xml</relativePath>  
+    </parent>  
+     
+	<artifactId>raycom_components</artifactId>
+	<packaging>jar</packaging>
+	
+   <dependencies>
+		<dependency>
+			<groupId>io.raycom</groupId>
+		  	<artifactId>raycom-parent</artifactId>
+	  		<version>${raycom-parent.version}</version>
+	  	</dependency>
+	</dependencies>
+     
+	<!-- 设定主仓库，按设定顺序进行查找。 -->
+	<repositories>
+		<!-- 如有Nexus私服, 取消注释并指向正确的服务器地址.-->
+		<repository>
+			<id>raycom</id>
+			<name>Team Nexus Repository</name>
+			<url>http://139.196.191.0:8888/repository/maven-public/</url>
+		</repository> 
+	</repositories>
+</project>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.raycom.modules.sys.menu.MenuDao">
+	
+	<!-- 获取所有菜单项 -->
+	<select id="menuList" resultType="rdata">
+		SELECT 	menu_id			"id",
+				parent_id		"pId",
+				name			"name",
+				(select name from com_menu m where m.menu_id = cm.PARENT_ID) "parentName"
+		 FROM	com_menu cm
+		WHERE	del_flag='N'
+		order by sort
+	</select>	
+	
+	<!-- 根基菜单ID获取菜单项 -->
+	<select id="searchMenuById" parameterType="rdata" resultType="rdata">
+		SELECT   cm.menu_id		"menuId",
+       			 cm.parent_id   "parentId",
+       			 (select name from com_menu m where m.menu_id = cm.PARENT_ID) "parentName",
+       			 cm.name        "name",
+       			 cm.href        "href",
+       			 cm.remarks     "remarks",
+       			 cm.icon      	"icon",
+       			 cm.target      "target",
+       			 cm.is_show 	"isShow",
+      			 cm.sort		"sort",
+      			 cm.permission  "permission"
+		 FROM 	 com_menu cm
+		WHERE    cm.menu_id=#{menuId}
+		
+	</select>
+	
+	<!-- 新增菜单 -->
+	 <insert id="addMenu" parameterType="rdata">
+	 <selectKey resultType="long" keyProperty="menuId" order="BEFORE">
+              SELECT seq_com_menu.nextval  as "menuId" from dual
+      </selectKey>
+		INSERT INTO com_menu(
+				menu_id,
+				parent_id,
+				parent_ids,
+				name,
+				sort,
+				href,
+				target,
+				remarks,
+				icon,
+				create_by,
+				create_date,
+				update_by,
+				update_date,
+				permission)
+		VALUES (trim(#{menuId}),
+				trim(#{parentId}),
+				trim(#{pids}),
+				trim(#{name}),
+				trim(#{sort}),
+				trim(#{href}),
+				trim(#{target}),
+				trim(#{remarks}),
+				trim(#{icon}),
+				#{currentUser},
+				sysdate,
+				#{currentUser},
+				sysdate,
+				trim(#{permission}))
+	</insert> 
+	
+	<!-- 更新菜单 -->
+	<update id="updateMenu" parameterType="rdata">
+		UPDATE 	com_menu
+		   SET 	name 		= trim(#{name}),
+   				href      	= trim(#{href}),
+   				remarks   	= trim(#{remarks}),
+   				target   	= trim(#{target}),
+   				icon   		= trim(#{icon}),
+   				is_show   	= trim(#{isShow}),
+   				update_by  	= #{currentUser},
+   				update_date = sysdate,
+   				sort      	= trim(#{sort}),
+   				permission 	= trim(#{permission})
+    	 WHERE 	menu_id 	= #{menuId}
+	</update>
+	
+	<!-- 根据菜单ID删除菜单 -->
+	<update id="delMenu" parameterType="rdata" >
+		UPDATE  com_menu SET del_flag='Y',
+				update_by  	= #{currentUser},
+   				update_date = sysdate
+		WHERE	menu_id = #{menuId} or parent_ids like '%' || #{menuId} || '%'
+	</update>
+	
+	<!-- 根据菜单ID删除菜单 -->
+	<update id="delMenuRole" parameterType="rdata" >
+		DELETE FROM com_role_menu t WHERE menu_id 
+		IN ( select menu_id from com_menu where menu_id = #{menuId} or parent_ids like '%' || #{menuId} || '%' ) 
+	</update>
+	
+	<!-- 根据父菜单ID获取其的所有父级编号-->
+	<select id="searchPIds" parameterType="rdata" resultType="rdata">
+		SELECT   nvl2(cm.parent_ids,cm.parent_ids||','||cm.menu_id,cm.menu_id)   "pids"
+		  FROM 	 com_menu cm
+		 WHERE   cm.menu_id=#{parentId}
+	</select>
+	
+	<!-- 添加按钮 -->
+	 <insert id="addButton" parameterType="rdata">
+	 INSERT INTO com_menu_permission(
+	 			menu_permission_id,
+				menu_id,
+				permission_code,
+				permission_name,
+				create_by,
+				create_date,
+				update_by,
+				update_date
+				)
+		VALUES (seq_menu_permission.nextval,
+				#{menuId},
+				trim(#{permissionCode}),
+				trim(#{permissionName}),
+				#{currentUser},
+				sysdate,
+				#{currentUser},
+				sysdate)
+	 </insert>
+	 
+	 <!-- 查看按钮 -->
+	 <select id="selectButton" parameterType="rdata" resultType="rdata">
+	    SELECT  menu_id				"menuId",
+	 			permission_code "permissionCode",
+	 			permission_name  "permissionName"
+	      FROM  com_menu_permission	
+	     WHERE	menu_id=#{menuId}
+	       AND  del_flag='N'
+	 </select>
+	 
+	 <!-- 查看按钮 -->
+	 <select id="selectBut" parameterType="rdata" resultType="rdata">
+	    SELECT  permission_name "permissionName"
+	      FROM  com_menu_permission	
+	     WHERE	menu_id=#{menuId}
+	      AND	permission_code =#{permissionCode}
+	      AND   del_flag='N'
+	 </select>
+	 
+	 <!-- 修改按钮 -->
+	 <update id="updateButton" parameterType="rdata" >
+	    UPDATE  com_menu_permission SET 
+	 		 	permission_name   = trim(#{permissionName}),
+	 			update_by  		  = #{currentUser},
+   				update_date 	  = sysdate 
+	    WHERE	menu_id 		  = #{menuId}
+	      AND	permission_code   = #{permissionCode}
+	 </update>
+	 
+	<!-- 修改菜单保存时删除按钮 -->
+	<delete id="delButton" parameterType="rdata" >
+		DELETE FROM com_menu_permission WHERE menu_id =  #{menuId}
+	</delete>
+	
+	<!-- 删除单个按钮 -->
+	<delete id="delButtonAlone" parameterType="rdata" >
+		DELETE FROM com_menu_permission WHERE menu_id =  #{menuId} AND permission_code = #{permissionCode}
+	</delete>
+	
+	<!-- 依据菜单ID删除按钮 -->
+	<update id="delMenuButton" parameterType="rdata" >
+		UPDATE 	com_menu_permission SET 
+				del_flag	='Y'   ,
+				update_by  	= #{currentUser},
+   				update_date = sysdate
+		 WHERE	menu_id 	
+		 IN ( select menu_id from com_menu where menu_id = #{menuId} or parent_ids like '%' || #{menuId} || '%' )
+	</update>
+	
+</mapper>

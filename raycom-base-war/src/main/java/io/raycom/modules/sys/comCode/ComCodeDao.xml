@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.raycom.modules.sys.comCode.ComCodeDao">
+	
+	<!-- 获取所有共同代码项 -->
+	<select id="querycomCodeList" resultType="rdata" parameterType="page">
+		SELECT 	dict_id			"dictId",
+				type		    "type",
+				code			"code",
+				label           "label",
+				remark          "remark",
+				sort            "sort",
+				CASE del_flag 
+				WHEN 'Y' THEN '禁用'  
+				WHEN 'N' THEN '可用'  
+				END 			"delFlag"
+		 FROM	com_dict
+		 WHERE  1=1 
+		<if test="param.type != '-1' and param.type != ''">
+		 AND type in trim(#{param.type})
+		</if>
+    	 <if test="param.label != null and param.label != ''">
+		 AND  label like  '%' || trim(#{param.label}) || '%'
+		</if>
+		 <if test="param.remark != null and param.remark != ''">
+		 AND  remark like  '%' || trim(#{param.remark}) || '%'
+		 </if>
+		ORDER BY dict_id asc
+	</select>	
+	
+	<!-- 根据共同代码ID获取共同代码 -->
+	<select id="getComCodeList" resultType="rdata" parameterType="rdata">
+		SELECT   dict_id	 "dictId",
+       			 type        "type",
+       			 code        "code",
+       			 label       "label",
+       			 remark     "remark",
+       			 sort      	 "sort",
+       			 del_flag    "delFlag"
+		  FROM 	 com_dict 
+		 WHERE   dict_id=#{dictId}
+	</select>
+	
+	<!-- 新增共同代码 -->
+	 <insert id="addComCodeDo" parameterType="rdata">
+	 	<selectKey resultType="String" keyProperty="dictId" order="BEFORE">
+            SELECT seq_com_dict.nextval as "dictId" from dual
+ 	 	 </selectKey>
+		INSERT INTO com_dict(
+				dict_id,
+				code,
+				label,
+				type,
+				remark,
+				sort,
+				del_flag,
+				create_by,
+				create_date,
+				update_by,
+				update_date)
+		VALUES (#{dictId},
+				trim(#{code}),
+				trim(#{label}),
+				trim(#{type}),
+				trim(#{remark}),
+				trim(#{sort}),
+				trim(#{delFlag}),
+				#{currentUser},
+				sysdate,
+				#{currentUser},
+				sysdate)
+	</insert> 
+	
+	<!-- 更新共同代码 -->
+	<update id="updateComCodeDo" parameterType="rdata">
+		UPDATE 	com_dict
+		   SET 	label      	= trim(#{label}),
+   				remark   	= trim(#{remark}),
+   				sort   		= trim(#{sort}),
+   				del_flag    = trim(#{delFlag}),
+   				update_by  	= #{currentUser},
+   				update_date = sysdate
+    	 WHERE 	dict_id 	= #{dictId}
+	</update>
+	
+	<!-- 查询分类 -->
+	<select id="getType" resultType="rdata" >
+		SELECT distinct type     "type"		FROM com_dict
+		ORDER BY type ASC
+	</select>
+	
+</mapper>
