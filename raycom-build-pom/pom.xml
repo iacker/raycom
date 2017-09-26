@@ -1,0 +1,58 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.raycom</groupId>
+  <artifactId>raycom-build-pom</artifactId>
+  <packaging>pom</packaging>
+  <version>2.0.0_20170926</version>
+  
+  <distributionManagement>
+        <repository>
+            <id>release</id>
+            <name>cdc-plugin-respository</name>
+            <url>http://139.196.191.0:8888/repository/maven-releases/</url>
+        </repository>
+    </distributionManagement>
+  
+  
+	<modules>  
+        <module>../raycom-core</module>  
+        <module>../raycom-utils</module>  
+        <module>../raycom-common</module>  
+        <module>../raycom-context</module>  
+        <module>../raycom-web</module>  
+        <module>../raycom-web-support</module>  
+        <module>../raycom-tools</module>  
+        <module>../raycom-components</module>  
+        <module>../raycom-base-pack</module>  
+        <module>../raycom-base-war</module>  
+        <module>../raycom-pom</module>  
+    </modules>  
+    
+<build>  
+  
+        <pluginManagement>  
+            <plugins>  
+  
+                <plugin>  
+                    <groupId>org.apache.maven.plugins</groupId>  
+                    <artifactId>maven-resources-plugin</artifactId>  
+                    <version>2.6</version>  
+                    <configuration>  
+                        <encoding>UTF-8</encoding>  
+                    </configuration>  
+                </plugin>  
+  
+                <plugin>  
+                    <groupId>org.apache.maven.plugins</groupId>  
+                    <artifactId>maven-compiler-plugin</artifactId>  
+                    <version>2.5.1</version>  
+                    <configuration>  
+                        <encoding>UTF-8</encoding>  
+                    </configuration>  
+                </plugin>  
+  
+            </plugins>  
+        </pluginManagement>  
+  
+    </build>  		
+</project>
