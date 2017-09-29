@@ -1,4 +1,4 @@
-package io.raycom.common.bean.beanvalidator;
+package io.raycom.common.beanvalidator;
 
 /**
  * 默认Bean验证组

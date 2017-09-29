@@ -13,8 +13,8 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import io.raycom.common.utils.file.FileUtils;
-import io.raycom.components.context.concurrent.RaycomExecutorService;
+import io.raycom.context.concurrent.RaycomExecutorService;
+import io.raycom.utils.file.FileUtils;
 
 @Component
 public class MailSender {
@@ -96,7 +96,12 @@ public class MailSender {
 		HtmlEmail hemail = new HtmlEmail();
 		try {
 			hemail.setHostName(mailProperties.getMailHost());
-			hemail.setSmtpPort(mailProperties.getMailPort());
+			if("true".equals(mailProperties.getMailIsSSL())) {
+				hemail.setSSLOnConnect(true); // 设定是否使用SSL
+				hemail.setSslSmtpPort(String.valueOf(mailProperties.getMailPort()));
+			}else {
+				hemail.setSmtpPort(mailProperties.getMailPort());
+			}
 			hemail.setCharset(mailProperties.getCharSet());
 			hemail.setFrom(mailProperties.getMailFromAccount(),mailProperties.getMailUserName());
 			hemail.setAuthentication(mailProperties.getMailAccount(), mailProperties.getMailPassword());

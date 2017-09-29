@@ -9,8 +9,8 @@ import org.springframework.web.client.RestTemplate;
 
 import io.raycom.common.mapper.JaxbMapper;
 import io.raycom.common.mapper.JsonMapper;
-import io.raycom.components.messageService.bean.MsgBean;
 import io.raycom.components.util.log.RaycomLog;
+import io.raycom.context.bean.MsgBean;
 
 @Component
 public class RestRaycomTemple {

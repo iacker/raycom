@@ -1,7 +1,7 @@
 package io.raycom.components.util.log.dao;
 
 import io.raycom.components.util.log.bean.Log;
-import io.raycom.system.framework.persistence.annotation.MyBatisDao;
+import io.raycom.web.persistence.annotation.MyBatisDao;
 
 /**
  * 日志DAO接口

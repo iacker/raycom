@@ -6,7 +6,7 @@
 	<parent>  
         <groupId>io.raycom</groupId>
   		<artifactId>raycom-parent-pom</artifactId>
-  		<version>2.0.0_20170830</version> 
+  		<version>2.0.0_20170926</version> 
         <relativePath>../raycom-parent-pom/pom.xml</relativePath>  
     </parent>  
      
@@ -16,9 +16,39 @@
    <dependencies>
 		<dependency>
 			<groupId>io.raycom</groupId>
-		  	<artifactId>raycom-common</artifactId>
-	  		<version>${raycom-parent.version}</version>
-	  	</dependency>
+			<artifactId>raycom-core</artifactId>
+			<version>${raycom-core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.raycom</groupId>
+			<artifactId>raycom-utils</artifactId>
+			<version>${raycom-utils.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.raycom</groupId>
+			<artifactId>raycom-common</artifactId>
+			<version>${raycom-common.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.raycom</groupId>
+			<artifactId>raycom-context</artifactId>
+			<version>${raycom-context.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.raycom</groupId>
+			<artifactId>raycom-web</artifactId>
+			<version>${raycom-web.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.raycom</groupId>
+			<artifactId>raycom-web-support</artifactId>
+			<version>${raycom-web-support.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.raycom</groupId>
+			<artifactId>raycom-tools</artifactId>
+			<version>${raycom-tools.version}</version>
+		</dependency>
 	</dependencies>
      
 	<!-- 设定主仓库，按设定顺序进行查找。 -->

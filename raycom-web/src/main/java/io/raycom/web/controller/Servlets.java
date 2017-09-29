@@ -32,6 +32,7 @@ import io.raycom.utils.string.Encodes;
 import io.raycom.utils.string.StringUtils;
 import io.raycom.web.bean.Principal;
 
+
 /**
  * Http与Servlet工具类.
  * @author calvin/csq

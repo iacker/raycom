@@ -1,12 +1,12 @@
 package io.raycom.components.util.log.bean;
 
-import io.raycom.common.utils.string.StringUtils;
-import io.raycom.system.framework.persistence.DataEntity;
-
 import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+import io.raycom.utils.string.StringUtils;
+import io.raycom.web.support.mvc.bean.DataEntity;
 
 /**
  * 日志Entity

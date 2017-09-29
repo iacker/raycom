@@ -1,4 +1,4 @@
-package io.raycom.common.bean.beanvalidator;
+package io.raycom.common.beanvalidator;
 
 /**
  * 编辑Bena验证组

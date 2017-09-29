@@ -10,8 +10,9 @@ import java.util.Map;
 import org.springframework.core.io.DefaultResourceLoader;
 
 import com.google.common.collect.Maps;
-import io.raycom.common.utils.properties.PropertiesLoader;
-import io.raycom.common.utils.string.StringUtils;
+
+import io.raycom.utils.properties.PropertiesLoader;
+import io.raycom.utils.string.StringUtils;
 
 /**
  * 全局配置类

@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.raycom.common.mapper.JsonMapper;
-import io.raycom.components.messageService.bean.ResponseRestBean;
 import io.raycom.components.util.log.RaycomLog;
+import io.raycom.context.bean.ResponseRestBean;
 
 @Component
 public class RestSendLog {
@@ -26,3 +26,4 @@ public class RestSendLog {
 		}
 	}
 }
+	

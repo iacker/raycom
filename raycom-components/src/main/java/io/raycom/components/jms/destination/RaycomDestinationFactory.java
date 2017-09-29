@@ -1,9 +1,9 @@
 package io.raycom.components.jms.destination;
 
-import io.raycom.system.framework.collection.RData;
-
 import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.stereotype.Component;
+
+import io.raycom.core.collection.RData;
 
 @Component
 public class RaycomDestinationFactory {

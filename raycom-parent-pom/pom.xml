@@ -3,7 +3,7 @@
   <groupId>io.raycom</groupId>
   <artifactId>raycom-parent-pom</artifactId>
   <packaging>pom</packaging>
-  <version>2.0.0_21070926</version>
+  <version>2.0.0_20170926</version>
   
   <distributionManagement>
         <repository>
@@ -16,12 +16,16 @@
   <!-- 项目属性 -->
 	<properties>
 		<!-- main version setting -->
-		<raycom-system.version>2.0.0_20170926</raycom-system.version> 
+		<raycom-base-pack.version>2.0.0_20170926</raycom-base-pack.version> 
 		<raycom-common.version>2.0.0_20170926</raycom-common.version> 
 		<raycom-components.version>2.0.0_20170926</raycom-components.version> 
-		<raycom-war.version>2.0.0_20170926</raycom-war.version> 
-		<raycom-setup.version>2.0.0_20170926</raycom-setup.version> 
-		<!-- <spring.version>4.0.8.RELEASE</spring.version>  -->
+		<raycom-core.version>2.0.0_20170926</raycom-core.version> 
+		<raycom-web.version>2.0.0_20170926</raycom-web.version> 
+		<raycom-utils.version>2.0.0_20170926</raycom-utils.version> 
+		<raycom-context.version>2.0.0_20170926</raycom-context.version> 
+		<raycom-web-support.version>2.0.0_20170926</raycom-web-support.version> 
+		<raycom-tools.version>2.0.0_20170926</raycom-tools.version> 
+
 		<spring.version>4.1.5.RELEASE</spring.version> 
 		<validator.version>5.1.1.Final</validator.version>
 		<mybatis.version>3.2.8</mybatis.version>
@@ -807,11 +811,13 @@
 				<configuration>
 					<packagingExcludes>
 						WEB-INF/classes/org/apache/ibatis/**,
+						WEB-INF/lib/**,
 						WEB-INF/classes/org/mybatis/spring/**
 					</packagingExcludes>
 					<warSourceExcludes>
 						static/bootstrap/2.3.1/docs/**,
 						static/ckeditor/_samples/**,
+						WEB-INF/lib/**,
 						static/ckeditor/_source/**,
 						static/ckfinder/_samples/**,
 						static/ckfinder/help/**,

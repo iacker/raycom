@@ -10,13 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.method.HandlerMethod;
 
-import io.raycom.common.bean.SystemUser;
-import io.raycom.common.utils.SpringContextHolder;
-import io.raycom.common.utils.lang.Exceptions;
-import io.raycom.common.utils.string.StringUtils;
-import io.raycom.common.utils.user.UserUtils;
 import io.raycom.components.util.log.bean.Log;
 import io.raycom.components.util.log.dao.LogDao;
+import io.raycom.context.bean.SystemUser;
+import io.raycom.core.application.SpringContextHolder;
+import io.raycom.utils.lang.Exceptions;
+import io.raycom.utils.string.StringUtils;
+import io.raycom.web.support.utils.user.UserUtils;
 
 /**
  * 字典工具类

@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2005-2012 springside.org.cn
  */
-package io.raycom.common.bean.beanvalidator;
+package io.raycom.common.beanvalidator;
 
 import java.util.List;
 import java.util.Map;

@@ -1,9 +1,9 @@
 package io.raycom.components.mail;
 
-import io.raycom.common.utils.string.StringUtils;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import io.raycom.utils.string.StringUtils;
 
 @Component
 public class MailProperties {
@@ -22,22 +22,34 @@ public class MailProperties {
 	private  String mailUserName;
 	@Value("${email.password}")
 	private  String mailPassword;
+	@Value("${email.isSSL}")
+	private  String mailIsSSL;
 	
+	public String getMailIsSSL() {
+		return mailIsSSL;
+	}
+	public void setMailIsSSL(String mailIsSSL) {
+		this.mailIsSSL = mailIsSSL;
+	}
 	public String getMailHost() {
 		return mailHost;
 	}
 	public void setMailHost(String mailHost) {
 		this.mailHost = mailHost;
 	}
+	
 	public int getMailPort() {
 		return mailPort;
 	}
+	
 	public void setMailPort(int mailPort) {
 		this.mailPort = mailPort;
 	}
+	
 	public String getCharSet() {
 		return charSet;
 	}
+	
 	public void setCharSet(String charSet) {
 		this.charSet = charSet;
 	}

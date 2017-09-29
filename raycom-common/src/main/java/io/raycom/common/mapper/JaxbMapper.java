@@ -20,9 +20,9 @@ import javax.xml.namespace.QName;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.util.Assert;
 
-import io.raycom.common.utils.lang.Exceptions;
-import io.raycom.common.utils.lang.Reflections;
-import io.raycom.common.utils.string.StringUtils;
+import io.raycom.utils.lang.Exceptions;
+import io.raycom.utils.lang.Reflections;
+import io.raycom.utils.string.StringUtils;
 
 /**
  * 使用Jaxb2.0实现XML<->Java Object的Mapper.

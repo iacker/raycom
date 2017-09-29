@@ -24,8 +24,9 @@
         <module>../raycom-tools</module>  
         <module>../raycom-components</module>  
         <module>../raycom-base-pack</module>  
-        <module>../raycom-base-war</module>  
-        <module>../raycom-pom</module>  
+        <module>../raycom-devoops-war</module>  
+        <module>../raycom-devoops-static</module>  
+       <!--  <module>../raycom-devoops-pom</module>   -->
     </modules>  
     
 <build>  
