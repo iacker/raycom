@@ -1,4 +1,9 @@
 ## 软件发布记录
+### 版本2.0.2_20180222
+ - 涉及raycom-web-support，raycom-context
+ 1. 增加web方式下基于json方式登录后，将登陆方式设置为非json的api。用于登录情况下访问主页
+
+
 ### 版本2.0.2_20180125
  - 涉及raycom-web-support，raycom-devoops-war
  1. 增加自定义登陆和主页面地址，需要在raycom配置文件中配置
