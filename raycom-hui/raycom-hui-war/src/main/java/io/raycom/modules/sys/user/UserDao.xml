@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.raycom.modules.sys.user.UserDao">
+
+	<!-- 获取所有用户 -->
+	<select id="getAllUser" resultType="rdata" parameterType="page" >
+		 SELECT ROWNUM 					"num",  
+		 		b.* 
+		 FROM 
+		 (SELECT   distinct
+		 		   cu.user_id 													"userId",
+       			   cu.login_name 												"loginName",
+			       cu.user_name 												"userName",
+			       cu.user_type 												"userType",
+			       cu.org_id 													"orgId",
+			       cu.sex 														"sex",
+			       cu.position 													"position",
+			       cu.employee_id												"employeeId",
+			       (select d.org_name from tb_usc_hospital d where cu.org_id = d.org_id) "orgName",
+			       cu.office_id 												"officeId",
+			       (select b.org_name from tb_usc_org b where cu.office_id = b.org_id) "officeName",
+			       CASE cu.login_flag
+			         when 'Y' then
+			          '允许登录'
+			         when 'N' then
+			          '禁止登录'
+			       END "loginFlag",
+			       listagg(cr.role_name, ',') within GROUP(ORDER BY cu.user_id) over(partition by cu.user_id) as "roleName",
+			       cu.password 														"password",
+			       cu.phone_No														"phoneNo",
+			       cu.mobile_No														"mobileNo"
+			  	FROM com_user cu, com_role_user ru, com_role cr
+			 	WHERE cu.del_flag = 'N'
+                and cu.user_id = ru.user_id(+)
+                and ru.role_id = cr.role_id(+) 		   	
+		<if test="param.currentUser != '10000001'" >
+			 AND cu.user_id	!='10000001'
+		</if>
+		<if test="param.whId != null and param.whId != ''">
+			 AND cu.user_id in (select user_id
+				  from tb_usc_warehouse_user
+				 where wh_id in (select wh_id from tb_usc_warehouse where office_id = trim(#{param.whId}))) 
+		</if>
+	    <if test="param.loginName != null and param.loginName != ''">
+			 AND cu.login_name	 like  '%' || trim(#{param.loginName}) || '%'
+		</if>
+	     <if test="param.userName != null and param.userName != ''">
+			 AND cu.user_name like  '%' || trim(#{param.userName}) || '%'
+		</if>
+		<if test="param.assistCode != null and param.assistCode != ''">
+			 AND upper(cu.assist_code) like  '%' || upper(trim(#{param.assistCode})) || '%'
+		</if>
+		<if test="param.officeId != null and param.officeId != ''">
+			 AND cu.office_id like  '%' || trim(#{param.officeId}) || '%'
+		</if>
+		<if test="param.loginFlag != null and param.loginFlag != '' and param.loginFlag != '-1'">
+			<if test="param.loginFlag=='01'">
+				AND	cu.login_flag = 'Y'
+			</if>
+			<if test="param.loginFlag=='02'">
+				AND cu.login_flag = 'N'
+			</if>
+		</if>
+		<if test="param.userType != null and param.userType != '' and param.userType != '-1'">
+			 AND cu.user_type = trim(#{param.userType}) 
+		</if>
+		<if test="param.roleId != null and param.roleId != '' and param.roleId != '-1'">
+			 AND ru.role_id    =trim(#{param.roleId}) 
+		</if>
+			) b
+	</select>
+	
+	<!-- 获取所有用户，用户列表模态窗用 -->
+	<select id="getAllUserForPopup" resultType="rdata" parameterType="page" >
+		 SELECT ROWNUM 					"num",  
+		 		b.* 
+		 FROM 
+		 (SELECT   distinct
+		 		   cu.user_id 													"userId",
+       			   cu.login_name 												"loginName",
+			       cu.user_name 												"userName",
+			       cu.user_type 												"userType",
+			       cu.org_id 													"orgId",
+			       cu.sex 														"sex",
+			       cu.position 													"position",
+			       (select d.org_name from tb_usc_hospital d where cu.org_id = d.org_id) "orgName",
+			       cu.office_id 												"officeId",
+			       (select b.org_name from tb_usc_org b where cu.office_id = b.org_id) "officeName",
+			       CASE cu.login_flag
+			         when 'Y' then
+			          '允许登录'
+			         when 'N' then
+			          '禁止登录'
+			       END "loginFlag",
+			       listagg(cr.role_name, ',') within GROUP(ORDER BY cu.user_id) over(partition by cu.user_id) as "roleName",
+			       cu.password 														"password",
+			       cu.employee_id 													"employeeId",
+			       cu.phone_No														"phoneNo",
+			       cu.mobile_No														"mobileNo"
+			  	FROM com_user cu, com_role_user ru, com_role cr
+			 	WHERE cu.del_flag = 'N'
+			  	and ru.user_id(+) = cu.user_id
+			   	and cr.role_id(+) = ru.role_id
+		<if test="param.currentUser != '10000001'" >
+			 AND cu.user_id	!='10000001'
+		</if>
+		 <if test="param.whId != null and param.whId != ''">
+			 AND cu.user_id in (select user_id
+				  from tb_usc_warehouse_user
+				 where wh_id in (select wh_id from tb_usc_warehouse where office_id = trim(#{param.whId}))) 
+		</if>
+	    <if test="param.employeeId != null and param.employeeId != ''">
+			 AND cu.employee_id	 like  '%' || trim(#{param.employeeId}) || '%'
+		</if>
+	     <if test="param.userName != null and param.userName != ''">
+			 AND cu.user_name like  '%' || trim(#{param.userName}) || '%'
+		</if>
+		<if test="param.loginName != null and param.loginName != ''">
+			 AND Upper(cu.login_name) like  '%' || Upper(trim(#{param.loginName})) || '%'
+		</if>
+		<if test="param.officeId != null and param.officeId != ''">
+			 AND cu.office_id like  '%' || trim(#{param.officeId}) || '%'
+		</if>
+		<if test="param.loginFlag != null and param.loginFlag != '' and param.loginFlag != '-1'">
+			<if test="param.loginFlag=='01'">
+				AND	cu.login_flag = 'Y'
+			</if>
+			<if test="param.loginFlag=='02'">
+				AND cu.login_flag = 'N'
+			</if>
+		</if>
+		<if test="param.userType != null and param.userType != '' and param.userType != '-1'">
+			 AND cu.user_type = trim(#{param.userType}) 
+		</if>
+		<if test="param.roleId != null and param.roleId != '' and param.roleId != '-1'">
+			 AND ru.role_id    =trim(#{param.roleId}) 
+		</if>
+			) b
+	</select>
+	
+		<!-- 获取所有部门 -->
+	<select id="getOfficeList" resultType="rdata">
+		SELECT org_id "id",
+		       parent_org_id "pId",
+		       org_name "name",
+		       (select org_name from tb_usc_org m where m.org_id = cm.parent_org_id) "parentName"
+		  FROM tb_usc_org cm
+		 WHERE del_flag = 'N'
+	</select>
+	
+	<!-- 查询所有角色 -->
+	<select id="getRoleList" resultType="rdata" >
+		SELECT 	role_id     "roleId",
+				role_name   "roleName"
+      	  FROM  com_role
+      	  WHERE del_flag = 'N'
+	</select>
+	
+	<!-- 查询某用户没有的角色 -->
+	<select id="getExceptRoleList" resultType="rdata" parameterType="rdata">
+		SELECT  aa.role_id 			"roleId",
+		        aa.role_name 		"roleName"
+		  FROM  com_role aa
+		 WHERE  aa.del_flag = 'N' 
+		 AND	aa.role_id 
+		   NOT  IN (SELECT 	role_id   "roleid" 
+		              FROM 	com_role_user where 1=1
+			      	<if test="userId != null and userId !='' ">
+			      	   AND  user_id = trim(#{userId})
+			      	</if>
+				   )
+	</select>
+	
+	<!-- 查询某用户应有的角色 -->
+	<select id="getUserRole" resultType="rdata" parameterType="rdata" >
+		SELECT a.role_id 	"roleId"
+		 FROM  com_role_user a
+		WHERE  1=1 
+      	<if test="userId != null and userId !='' ">
+      	  AND  a.user_id = trim(#{userId})
+      	</if>
+	</select>
+	
+	<!-- 用户信息 -->
+	<select id="getUser" resultType="rdata" >
+		SELECT a.user_id     "userId",
+		       a.login_name  "loginName",
+		       a.user_name   "userName",
+		       a.assist_code "assistCode",
+		       a.user_type   "userType",
+		       a.org_id      "orgId",
+		       a.sex      	  "sex",
+		       a.position     "position",
+		       (select h.org_name from tb_usc_hospital h where a.org_id = h.org_id)	 "orgName",
+		       a.office_id   "officeId",
+		       (select b.org_name from  tb_usc_org b where a.office_id = b.org_id)   "officeName",
+		       a.login_flag  "loginFlag",
+		       a.email       "email",
+		       a.phone_no    "phoneNo",
+		       a.mobile_no   "mobileNo",
+		       a.password    "password",
+		       a.employee_id "employeeId",
+		       a.authorize_office_ids "authorizeOfficeIds"
+		FROM   com_user a
+		WHERE  del_flag = 'N'
+		<if test="userId!=null and userId!=''">
+			AND	   a.user_id 	= #{userId}
+		</if>
+		<if test="loginName!=null and loginName!=''">
+			AND	   lower(a.login_name) = lower(#{loginName})
+		</if>
+	</select>
+	
+	<!-- 查重 -->
+	<select id="getUserName" resultType="rdata" >
+		SELECT 	a.user_id     "userId",
+		       	a.login_name  "loginName",
+		       	a.user_name   "userName",
+		       	a.user_type   "userType",
+		       	a.org_id      "orgId",
+		       	a.employee_id "employeeId"
+		FROM   	com_user a
+		WHERE  	del_flag = 'N'
+		AND		(
+				a.employee_id = #{employeeId}
+				OR
+				a.employee_id = substr(#{employeeId},-5)
+		)
+	</select>
+	
+	<!-- 添加新用户 -->
+	<insert id="createUserDo" parameterType="rdata">
+	  	<selectKey resultType="long" keyProperty="userId" order="BEFORE">
+            SELECT seq_com_user.nextval as "userId" from dual
+        </selectKey> 
+        	INSERT INTO com_user (
+      			user_id,
+      			office_id,
+      			login_name,
+      			password,
+      			user_name,
+      			assist_code,
+      			email,
+      			sex,
+      			phone_no,
+      			mobile_no,
+      			user_type,
+      			create_by,
+      			create_date,
+      			update_by,
+      			update_date,
+      			login_flag,
+      			employee_id,
+      			position,
+      			authorize_office_ids,
+      			build_date
+        	) VALUES (
+       			#{userId},
+       			trim(#{officeId}),
+       			trim(#{loginName}),
+       			#{password},
+       			trim(#{userName}),
+       			trim(#{assistCode}),
+       			trim(#{email}),
+       			trim(#{sex}),
+       			trim(#{phoneNo}),
+       			trim(#{mobileNo}),
+       			trim(#{userType}),
+       			#{currentUser},
+       			sysdate,
+       			#{currentUser},
+       			sysdate,
+       			#{loginFlag},
+       			trim(#{employeeId}),
+       			trim(#{position}),
+       			#{authorizeOfficeId},
+       			sysdate
+        	)
+     </insert>
+	
+	<!-- 给用户添加角色 -->
+	<insert id="createUserRole" parameterType="rdata">
+		   INSERT INTO com_role_user (
+				   role_id,
+				   user_id,
+				   create_by,
+				   create_date,
+				   update_by,
+				   update_date
+				   )
+			VALUES(	#{roleId},
+				  	#{userId},
+				  	#{currentUser},
+	       			sysdate,
+	       			#{currentUser},
+	       			sysdate)
+	</insert>
+    
+    <!--  修改用户信息 -->
+     <update id="updateUser" parameterType="rdata">
+		UPDATE com_user
+		   SET office_id   = #{officeId},
+		       user_name   = #{userName},
+		       assist_code   = #{assistCode},
+		       email       = #{email},
+		       sex   	   = #{sex},
+		       phone_no    = #{phoneNo},
+		       mobile_no   = #{mobileNo},
+		       user_type   = #{userType},
+		       update_by   = #{currentUser},
+		       update_date = SYSDATE,
+		       login_flag  = #{loginFlag},
+		       employee_id = #{employeeId},
+		       position	   = #{position},	
+		       authorize_office_ids=#{authorizeOfficeId}
+		WHERE  user_id     = #{userId}
+	
+     </update>
+
+    <!-- 检查用户ID是否有重复-->
+	<select id="checkLoginName" parameterType="rdata" resultType="rdata">
+		SELECT  user_id,
+                login_name
+          FROM  com_user 
+         WHERE  login_name = #{loginName}
+           AND  rownum     = 1
+	</select>
+	
+	<!-- 删除用户 -->
+	<update id="deleteUser" parameterType="rdata">
+     	UPDATE com_user
+		   SET del_flag    = 'Y',
+          	   login_flag  = 'N',
+          	   update_by  	= #{currentUser},
+			   update_date = sysdate
+		 WHERE user_id     = #{userId}
+     </update>
+     
+     <!-- 删除用户角色 -->
+	<delete id="deleteUserRole" parameterType="rdata">
+     	DELETE 	FROM 	com_role_user WHERE user_id		= #{userId}
+     </delete>
+     
+     <!-- 查询用户登录名和姓名 -->
+     <select id="queryUserName" parameterType="rdata" resultType="rdata">
+     	SELECT	login_name 	"loginName",
+      			password	"password",
+      			user_name	"userName"
+      	FROM	com_user	
+      	WHERE	user_id = #{currentUser}
+     </select>
+     
+     <!-- 校验密码 -->
+     <select id="queryUserPwd" parameterType="rdata" resultType="string">
+     	SELECT	password	"password"
+     	FROM	com_user
+     	WHERE	user_id = #{currentUser}
+     </select>
+     
+     <!-- 更改密码 -->
+     <select id="savePwd" parameterType="rdata">
+     	UPDATE	com_user	
+     	SET		password = #{newPassword},
+     			update_by  	= #{currentUser},
+			    update_date = sysdate
+     	WHERE	user_id = #{currentUser}
+     </select>
+	
+	 <!-- 重置密码 -->
+     <select id="resetPwd" parameterType="rdata">
+     	UPDATE	com_user	
+     	SET		password = #{password},
+     			update_by  	= #{currentUser},
+			    update_date = sysdate
+     	WHERE	login_Name = #{loginName}
+     </select>
+     
+     <!-- 查询所有科室 -->
+     <select id="querOfficeList" resultType="rdata">
+     	SELECT  org_name		"orgName",
+     			org_id			"orgId"
+     	FROM	tb_usc_org
+     
+     </select>
+     
+     <!-- 查询用户 -->
+	<select id="queryUserLoginName" parameterType="rdata" resultType="rdata">
+		SELECT	u.user_id		"userId",
+				u.user_name		"userName",
+				u.login_name	"loginName"
+		FROM	com_user u
+		WHERE	u.login_name = #{officeEmployeeName}
+		AND		(u.del_flag = 'N' or u.del_flag is null)
+	</select>
+    <!-- 更新用户联系方式 -->
+    <update id="updatedMobile" parameterType="rdata">
+    	 UPDATE com_user
+		 SET   mobile_no = #{mobileNo},
+               phone_no = #{phoneNo}
+		 WHERE user_id = #{currentUser}
+    </update>
+</mapper>

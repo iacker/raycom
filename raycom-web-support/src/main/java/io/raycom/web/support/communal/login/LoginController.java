@@ -9,6 +9,7 @@ import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,6 +44,12 @@ public class LoginController extends BaseController{
 	@Autowired
 	private SessionDAO sessionDAO;
 	
+	@Value("${loginPage}")
+	private String loginPage;
+	
+	@Value("${mainPage}")
+	private String mainPage;
+	
 	/**
 	 * 管理登录
 	 */
@@ -69,7 +76,7 @@ public class LoginController extends BaseController{
 			else
 				return renderString(response, principal);
 		}
-		return "../core/main/login";
+		return loginPage;
 	}
 
 	/**
@@ -118,7 +125,7 @@ public class LoginController extends BaseController{
 	        return renderString(response, model);
 		}
 		
-		return "../core/main/login";
+		return loginPage;
 	}
 
 	/**
@@ -151,7 +158,7 @@ public class LoginController extends BaseController{
 				return renderString(response, principal);
 		}
 		
-		return "../core/main/index";
+		return mainPage;
 	}
 
 
@@ -166,6 +173,20 @@ public class LoginController extends BaseController{
 		Principal principal = UserUtils.getPrincipal();
 
 		return renderString(response, principal);
+	}
+	
+	/**
+	 * 移动端检测是否在线
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "${adminPath}/setMobileLogin")
+	public String setMobileLogin(HttpServletRequest request, HttpServletResponse response) {
+		Principal principal = UserUtils.getPrincipal();
+		boolean mobile = WebUtils.isTrue(request, FormAuthenticationFilter.DEFAULT_MOBILE_PARAM);
+		principal.setMobileLogin(mobile);
+		return "";
 	}
 	
 	/**

@@ -19,7 +19,7 @@ import io.raycom.web.persistence.annotation.MyBatisDao;
 @MyBatisDao
 public interface SecurityDao extends BaseDao {
 	
-	public SystemUser getByLoginName(String loginName);
+	public SystemUser getByLoginName(RData rdata);
 	
 	public SystemUser getUser(String id);
 

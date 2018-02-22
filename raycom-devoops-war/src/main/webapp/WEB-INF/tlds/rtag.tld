@@ -6,20 +6,20 @@
 	
 	<tag>
 	    <name>menu</name>
-	    <tag-class>io.raycom.system.framework.tag.MenuTag</tag-class>
+	    <tag-class>io.raycom.web.support.presentation.tag.MenuTag</tag-class>
 	    <body-content>empty</body-content>
 	</tag>
 	<!-- 导航条  -->
 	<tag>
 	    <name>navigation</name>
-	    <tag-class>io.raycom.system.framework.tag.NavigationTag</tag-class>
+	    <tag-class>io.raycom.web.support.presentation.tag.NavigationTag</tag-class>
 	    <body-content>empty</body-content>
 	</tag>
 	
 	<!-- 下拉框 -->
 	<tag>
 		<name>select</name>
-		<tag-class>io.raycom.system.framework.tag.form.SelectTag</tag-class>
+		<tag-class>io.raycom.web.support.presentation.tag.form.SelectTag</tag-class>
 		<body-content>JSP</body-content>
 		<attribute>
 			<name>id</name>
@@ -91,7 +91,7 @@
 	<!-- select2下拉框 -->
 	<tag>
 		<name>select2</name>
-		<tag-class>io.raycom.system.framework.tag.form.Select2Tag</tag-class>
+		<tag-class>io.raycom.web.support.presentation.tag.form.Select2Tag</tag-class>
 		<body-content>JSP</body-content>
 		<attribute>
 			<name>id</name>

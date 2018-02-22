@@ -3,7 +3,7 @@
   <groupId>io.raycom</groupId>
   <artifactId>raycom-build-pom</artifactId>
   <packaging>pom</packaging>
-  <version>2.0.0_20170926</version>
+  <version>2.0.2_20171128</version>
   
   <distributionManagement>
         <repository>
@@ -17,16 +17,15 @@
 	<modules>  
         <module>../raycom-core</module>  
         <module>../raycom-utils</module>  
-        <module>../raycom-common</module>  
         <module>../raycom-context</module>  
-        <module>../raycom-web</module>  
-        <module>../raycom-web-support</module>  
-        <module>../raycom-tools</module>  
+        <module>../raycom-web-support</module>   
         <module>../raycom-components</module>  
-        <module>../raycom-base-pack</module>  
+        <module>../raycom-base-config</module>  
+        <module>../raycom-parent-pom</module>  
         <module>../raycom-devoops-war</module>  
         <module>../raycom-devoops-static</module>  
-       <!--  <module>../raycom-devoops-pom</module>   -->
+        <module>../raycom-devoops-pom</module>  
+        <module>../raycom-framework-pom</module>  
     </modules>  
     
 <build>  

@@ -21,12 +21,15 @@ public class SystemMenu implements Serializable  {
 	private String parentId;	// 父级菜单
 	private String parentIds; // 所有父级编号
 	private String name; 	// 名称
+	private String menuLvl; 	// 级别
 	private String href; 	// 链接
 	private String target; 	// 目标（ mainFrame、_blank、_self、_parent、_top）
 	private String icon; 	// 图标
 	private Integer sort; 	// 排序
 	private String permission; // 权限标识
 	private String hasChild; // 是否有子菜单
+	private SystemMenu parentMenu; // 是否有子菜单
+	
 	public String getHasChild() {
 		return hasChild;
 	}
@@ -149,6 +152,20 @@ public class SystemMenu implements Serializable  {
 	public void setId(String id) {
 		this.id = id;
 	}
+
+	public SystemMenu getParentMenu() {
+		return parentMenu;
+	}
+
+	public void setParentMenu(SystemMenu parentMenu) {
+		this.parentMenu = parentMenu;
+	}
 	
-	
+	public String getMenuLvl() {
+		return menuLvl;
+	}
+
+	public void setMenuLvl(String menuLvl) {
+		this.menuLvl = menuLvl;
+	}
 }

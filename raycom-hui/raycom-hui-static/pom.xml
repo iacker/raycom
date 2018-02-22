@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>io.raycom</groupId>
+	<artifactId>raycom-hui-static</artifactId>
+	<packaging>war</packaging>
+	<version>2.0.2_20180222</version> 
+	<name>raycom-hui-static</name>
+    <distributionManagement>
+        <repository>
+            <id>release</id>
+            <name>cdc-plugin-respository</name>
+            <url>http://139.196.191.0:8888/repository/maven-releases/</url>
+        </repository>
+    </distributionManagement>
+    
+	<!-- 设定主仓库，按设定顺序进行查找。 -->
+	<repositories>
+		<!-- 如有Nexus私服, 取消注释并指向正确的服务器地址.-->
+		<repository>
+			<id>raycom</id>
+			<name>Team Nexus Repository</name>
+			<url>http://139.196.191.0:8888/repository/maven-public/</url>
+		</repository> 
+	</repositories>
+</project>

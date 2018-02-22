@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.raycom.modules.sys.role.RoleDao">
+
+	<!-- 获取所有角色 -->
+	<select id="getAllRole" resultType="rdata" parameterType="page">
+		SELECT 	role_id 		"roleId",
+				role_name 		"roleName",
+				role_enname		"roleEnname"
+		FROM 	com_role
+		WHERE 	del_flag = 'N'
+		<if test="param.roleName != null and param.roleName != ''">
+			and role_name like '%' || trim(#{param.roleName}) || '%'
+		</if>
+		ORDER BY role_id
+	</select>
+	 
+	<!-- 查询角色Id -->
+	<select id="queryByRoleName" parameterType="rdata" resultType="string">
+		SELECT	role_id
+		FROM	com_role
+		WHERE 	del_flag = 'N'
+		AND 	role_name = trim(#{roleName})
+	</select>
+	
+	<!-- 新增角色 -->
+	<insert id="createRole" parameterType="rdata">
+		INSERT INTO com_role (
+				role_id,
+				role_name,
+				role_enname,
+				remarks,
+				create_by,
+				create_date,
+				update_by,
+				update_date) 
+		VALUES 	(SEQ_COM_ROLE.nextval,
+				trim(#{roleName}),
+				trim(#{roleEnname}),
+				trim(#{remarks}),
+				#{currentUser},
+				sysdate,
+				#{currentUser},
+				sysdate)
+	</insert>
+	
+	<!-- 角色名称验证 -->
+	<select id="checkNameInDetail" parameterType="rdata" resultType="rdata">
+		SELECT	role_id 	"roleId",
+				role_name 	"roleName",
+				role_type 	"roleType"
+		FROM 	com_role
+		WHERE	del_flag = 'N' 
+		AND 	role_name = trim(#{roleName}) 
+		AND 	role_id != trim(#{roleId})
+	</select>
+	
+	<!-- 新增权限 -->
+	<insert id="addComRoleMenu" parameterType="rdata">
+		INSERT INTO com_role_menu (
+				role_id,
+				menu_id,
+				permission_code,
+				create_by,
+				create_date,
+				update_by,
+				update_date) 
+		VALUES 	(trim(#{roleId}),
+				trim(#{menuId}),
+				decode(trim(#{permissionCode}),null,trim(#{permissionCode}),substr(trim(#{permissionCode}),6)),
+				#{currentUser},
+				sysdate,
+				#{currentUser},
+				sysdate)
+	</insert>
+	
+	<!-- 角色名称验证 -->
+	<select id="checkName" parameterType="rdata" resultType="rdata">
+		SELECT 	role_id 	"roleId",
+				role_name 	"roleName"
+		FROM 	com_role
+		WHERE	del_flag = 'N' 
+		AND 	role_name = trim(#{roleName})
+	</select>
+	
+	<!-- 删除角色 -->
+	<update id="deleteRole" parameterType="rdata">
+		UPDATE 	com_role
+		SET		del_flag = 'Y',
+				update_by  	= #{currentUser},
+   				update_date = sysdate
+		WHERE	role_id = #{roleId}
+	</update>
+	
+	<!-- 删除权限 -->
+	<delete id="deletePercodes" parameterType="rdata">
+		DELETE 	FROM com_role_menu 
+		WHERE	role_id = #{roleId}
+	</delete>
+	
+	<!-- 验证关联用户 -->
+	<select id="checkedUser" parameterType="rdata" resultType="string">
+		SELECT 	role_id 	"roleId" 
+		FROM 	com_role_user 
+		WHERE 	(del_flag = 'N' 
+		OR 		del_flag is null)
+		AND 	role_id = #{roleId} 
+		<![CDATA[ AND rownum <= 1]]>
+	</select>
+	
+	<!-- 查看角色 -->
+	<select id="queryDetail" parameterType="rdata" resultType="rdata">
+		SELECT 	role_id 	"roleId",
+				role_name 	"roleName",
+				role_enname	"roleEnname",
+				remarks 	"remarks"
+		FROM 	com_role
+		WHERE	role_id = #{roleId}
+	</select>
+	
+	<!-- 修改角色 -->
+	<update id="updateRole" parameterType="rdata">
+		UPDATE 	com_role
+		SET		role_name 		= #{roleName},
+				role_enname		= #{roleEnname},
+				remarks 		= #{remarks},
+				update_by 		= #{currentUser},
+				update_date 	= sysdate
+		WHERE	role_id = #{roleId}
+	</update>
+	
+	<!-- 根据角色Id查找菜单权限 -->
+	<select id="queryByRoleId" parameterType="string" resultType="rdata">
+		SELECT 	role_id 	"roleId" 
+		FROM 	com_role_menu 
+		WHERE 	role_id = #{roleId}
+	</select>
+	
+	<!-- 删除权限 -->
+	<delete id="deleteByRoleId" parameterType="string">
+		DELETE FROM 
+				com_role_menu 
+		WHERE 	role_id = #{roleId}
+	</delete>
+	
+	<!-- 获取所有菜单 -->
+	<select id="menuList" resultType="rdata">
+		SELECT 	menu_id 	"id",
+				parent_id 	"pId",
+				name 		"name",
+				'menu'		"type",
+				(select name from com_menu m where m.menu_id = cm.PARENT_ID) "parentName"
+		FROM 	com_menu cm
+		WHERE 	del_flag='N'
+		UNION
+		SELECT 	permission_code 	"id",
+				menu_id 			"pId",
+				permission_name 	"name",
+				'btn'				"type",
+				(select name from com_menu cm where cmp.menu_id = cm.menu_id) "parentName"
+		FROM 	com_menu_permission cmp
+		WHERE 	del_flag='N'
+	</select>
+	
+	<!-- 查询权限 -->
+	<select id="queryAllPermission" parameterType="rdata" resultType="rdata">
+		SELECT  cm.menu_id   			"id",
+        		cm.parent_id   			"pId",
+       			cm.name     			"name",
+       			'menu'					"type",
+       			(select name from com_menu m where m.menu_id = cm.PARENT_ID) 	"parentName", 
+       	CASE 	WHEN (crms.menu_id = cm.menu_id)  
+        THEN 	'true'
+        ELSE 	'' 
+        END  	"checked" 
+    	FROM   	com_menu cm,(select * from com_role_menu cr where cr.role_id = #{roleId}) crms 
+    	WHERE   cm.del_flag='N' and crms.menu_id(+) = cm.menu_id 
+    	UNION
+		SELECT  cmp.permission_code   	"id",
+        		cmp.menu_id       		"pId",
+        		cmp.permission_name  	"name",
+        		'btn'					"type",
+        		(select name from com_menu cm where cmp.menu_id = cm.menu_id) "parentName" ,
+        CASE WHEN  instr(crm.permission_code,cmp.permission_code)>0 
+        THEN  	'true'     
+        ELSE 	'' 
+        END 	"checked"        
+   		FROM   com_menu_permission cmp,(select * from com_role_menu cr where cr.role_id = #{roleId}) crm  
+    	WHERE   cmp.del_flag='N' and crm.menu_id(+) = cmp.menu_id 
+	</select>
+	
+</mapper>

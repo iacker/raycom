@@ -14,6 +14,7 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 import io.raycom.common.cache.CacheUtils;
+import io.raycom.common.config.Global;
 
 public class LoginValidater {
 
@@ -26,6 +27,7 @@ public class LoginValidater {
 	 */
 	@SuppressWarnings("unchecked")
 	public static boolean isValidateCodeLogin(String useruame, boolean isFail, boolean clean){
+		int loginValidateNum = Integer.parseInt(Global.getConfig("user.loginValidateNum"));
 		Map<String, Integer> loginFailMap = (Map<String, Integer>)CacheUtils.get("loginFailMap");
 		if (loginFailMap==null){
 			loginFailMap = Maps.newHashMap();
@@ -42,8 +44,7 @@ public class LoginValidater {
 		if (clean){
 			loginFailMap.remove(useruame);
 		}
-		//return loginFailNum >= 3;
-		return false;
+		return loginFailNum >= loginValidateNum;
 	}
 }
  

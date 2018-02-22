@@ -6,12 +6,11 @@
 	<parent>  
         <groupId>io.raycom</groupId>
   		<artifactId>raycom-parent-pom</artifactId>
-  		<version>2.0.0_20170926</version> 
+  		<version>2.0.2_20180222</version> 
         <relativePath>../raycom-parent-pom/pom.xml</relativePath>  
     </parent>  
      
 	<artifactId>raycom-context</artifactId>
-	<packaging>jar</packaging>
    
  	<dependencies>
 	  	<dependency>
@@ -23,11 +22,6 @@
 			<groupId>io.raycom</groupId>
 			<artifactId>raycom-utils</artifactId>
 			<version>${raycom-utils.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.raycom</groupId>
-			<artifactId>raycom-common</artifactId>
-			<version>${raycom-common.version}</version>
 		</dependency>
 	</dependencies>
 	<!-- 设定主仓库，按设定顺序进行查找。 -->

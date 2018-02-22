@@ -59,7 +59,13 @@ public class SecurityService extends BaseService implements InitializingBean {
 	 * @return
 	 */
 	public SystemUser getUserByLoginName(String loginName) {
-		SystemUser   user = securityDao.getByLoginName(loginName);	
+		RData rdata = new RData();
+		rdata.set("loginType", "single");
+		rdata.set("loginName", loginName);
+		if (Global.TRUE.equals(Global.getConfig("user.multiAccountType"))) {
+			rdata.set("loginType", "mul");
+		}
+		SystemUser   user = securityDao.getByLoginName(rdata);	
 		if (user == null){
 				return null;
 		}
