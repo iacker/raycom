@@ -11,6 +11,12 @@
 				file_path,
 				file_name_orig,
 				file_dir,
+				 <if test="sysName!= null and sysName != ''">
+				 sys_name,
+				 </if>
+				 <if test="customValue != null and customValue != ''">
+				 custom_value,
+				 </if>
 				create_by,
 				create_date)
 		VALUES (trim(#{fileId}),
@@ -19,6 +25,12 @@
 				trim(#{fileUploadPath}),
 				trim(#{OriginalFilename}),
 				trim(#{fileUploadDir}),
+				 <if test="sysName!= null and sysName != ''">
+				 trim(#{sysName}),
+				 </if>
+				 <if test="customValue != null and customValue != ''">
+				 trim(#{customValue}),
+				 </if>
 				#{currentUser},
 				#{createDate,jdbcType=DATE} )
 	</insert> 

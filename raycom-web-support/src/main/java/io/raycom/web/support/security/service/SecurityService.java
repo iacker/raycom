@@ -180,6 +180,7 @@ public class SecurityService extends BaseService implements InitializingBean {
 		System.out.println(sb.toString());
 		return true;
 	}
+	
 
 	@Override
 	public void afterPropertiesSet() throws Exception {

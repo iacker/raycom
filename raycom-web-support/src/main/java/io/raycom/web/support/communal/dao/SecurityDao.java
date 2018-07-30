@@ -1,5 +1,6 @@
 package io.raycom.web.support.communal.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.raycom.context.bean.SystemMenu;

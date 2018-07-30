@@ -5,9 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.raycom.common.config.Global;
 import io.raycom.common.mapper.JsonMapper;
 import io.raycom.components.util.log.bean.Log;
 import io.raycom.components.util.log.dao.LogDao;
+import io.raycom.web.support.utils.user.UserUtils;
 /**
  * 消息日志类
  * @author Administrator
@@ -67,6 +69,7 @@ public class RaycomLog {
 		log.setMethod(method);
 		log.setException(exception);
 		log.setIsNewRecord(true);
+		log.setIp(Global.getConfig("machine.name"));
 		log.preInsert();
 		
 		logger.info("日志写入: 类型：{} 标识：{}  内容: {}  主题：{} ", type,method,content,title);

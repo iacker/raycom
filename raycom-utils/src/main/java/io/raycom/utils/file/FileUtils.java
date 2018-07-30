@@ -645,10 +645,14 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 	 * @return
 	 */
 	public static String path(String path){
+		String prefix="";
+		if(path.startsWith("/")) {
+			prefix="/";
+		}
 		String p = StringUtils.replace(path, "\\", File.separator);
 		p=	StringUtils.replace(p, "/", File.separator);
 		p = StringUtils.join(StringUtils.split(p, File.separator), File.separator);
-		return p;
+		return prefix+p;
 	}
 	
 	public static String getFileName(String path) {

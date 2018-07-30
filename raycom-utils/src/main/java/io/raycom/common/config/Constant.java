@@ -38,5 +38,12 @@ public class Constant {
 	public static final String Y_VALUE = "Y";
 	public static final String N_VALUE = "N";
 	
+	
+	
+	public static final String USER_CACHE_RESOURCE = "userResource";
+	public static final String USER_CACHE_RESOURCE_lIST = "_list";
+	public static final String USER_CACHE_RESOURCE_STR = "_str";
+	public static final String USER_CACHE_RESOURCE_KEY = "total_";
+	
 }
  

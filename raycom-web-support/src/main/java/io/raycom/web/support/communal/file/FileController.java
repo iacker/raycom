@@ -53,7 +53,11 @@ public class FileController extends BaseController{
 	public  RData upload(@RequestParam("file")  MultipartFile file ) {  
 		String originalFilename = file.getOriginalFilename();
 	    String fileExt = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
-	    String fileName = IdGen.uuid()+"."+fileExt;
+	    String fileName;
+	    if(rdata.containsKey("sysName"))
+	    	fileName= rdata.getString("sysName")+IdGen.uuid()+"."+fileExt;
+	    else
+	     fileName = IdGen.uuid()+"."+fileExt;
 
 	    if (file.getSize() > maxSize) { // 检查文件大小
 			fileExt = "上传文件大小超过限制";

@@ -24,6 +24,7 @@ public class Log extends DataEntity<Log> {
 	private String params; 		// 操作提交的数据
 	private String userAgent;	// 操作用户代理信息
 	private String exception; 	// 异常信息
+	private String ip; 	// 异常信息
 	
 	private Date beginDate;		// 开始日期
 	private Date endDate;		// 结束日期
@@ -109,6 +110,14 @@ public class Log extends DataEntity<Log> {
 
 	public Date getBeginDate() {
 		return beginDate;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 
 	public void setBeginDate(Date beginDate) {

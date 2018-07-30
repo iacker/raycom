@@ -50,6 +50,7 @@
 	<!-- 插件配置 -->
 	<plugins>
 		<plugin interceptor="io.raycom.web.persistence.interceptor.PaginationInterceptor" />
+		<plugin interceptor="io.raycom.web.persistence.interceptor.ListParameterResolver" />
     </plugins>
 	
 </configuration>

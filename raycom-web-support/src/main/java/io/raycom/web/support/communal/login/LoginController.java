@@ -56,7 +56,7 @@ public class LoginController extends BaseController{
 	@RequestMapping(value = "${adminPath}/login", method = RequestMethod.GET)
 	public String login(HttpServletRequest request, HttpServletResponse response, Model model) {
 		Principal principal = UserUtils.getPrincipal();
-
+		logger.debug("principal, Principal {}",principal);
 		if (logger.isDebugEnabled()){
 			logger.debug("login, active session size: {}", sessionDAO.getActiveSessions(false).size());
 		}
@@ -68,14 +68,17 @@ public class LoginController extends BaseController{
 		
 		// 如果已经登录，则跳转到管理首页
 		if(principal != null && !principal.isMobileLogin()){
+			logger.debug("principal, active session MobileLogin");
 			return "redirect:" + adminPath;
 		}
 		if ("XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"))) {
+			logger.debug("principal, active session XMLHttpRequest");
 			if(principal==null)
 				return renderString(response, "LOGINED_TIME_OUT");
 			else
 				return renderString(response, principal);
 		}
+		logger.debug("principal, active session loginPage");
 		return loginPage;
 	}
 

@@ -18,6 +18,7 @@ import io.raycom.common.config.Constant;
 import io.raycom.components.jms.destination.RaycomDestinationFactory;
 import io.raycom.components.support.properties.JmsProperties;
 import io.raycom.components.util.log.RaycomLog;
+import io.raycom.utils.string.StringUtils;
 
 public class RaycomMessageListenerContainer extends
 		DefaultMessageListenerContainer implements MessageListener {
@@ -73,13 +74,18 @@ public class RaycomMessageListenerContainer extends
 	private String getRealDestinationName() {
 		String destinationName=getDestinationName();
 		if(Constant.MQ_MODEL_DEV.equals(properties.mqModel)){
-			InetAddress addr;
-			try {
-				addr = InetAddress.getLocalHost();
-				destinationName = addr.getHostAddress().toString()+getDestinationName();
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
+			if(StringUtils.isEmpty(properties.machineName)||"${machine.name}".equals(properties.machineName)) {
+				InetAddress addr;
+				try {
+					addr = InetAddress.getLocalHost();
+					destinationName = addr.getHostAddress().toString()+getDestinationName();
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				}
+			}else {
+				destinationName=properties.machineName+getDestinationName();
 			}
+			
 		}
 		return destinationName;
 	}

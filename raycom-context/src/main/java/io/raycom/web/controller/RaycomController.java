@@ -28,6 +28,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import io.raycom.common.beanvalidator.BeanValidators;
 import io.raycom.common.mapper.JsonMapper;
+import io.raycom.context.bean.MsgBean;
+import io.raycom.context.bean.ResponseRestBean;
 import io.raycom.core.collection.RData;
 import io.raycom.core.collection.RMultiData;
 import io.raycom.utils.date.DateUtils;
@@ -155,6 +157,36 @@ public abstract class RaycomController {
 	 */
 	protected void beanValidator(Object object, Class<?>... groups) {
 		BeanValidators.validateWithException(validator, object, groups);
+	}
+	
+	/**
+	 * 逍遥rest接口的参数格式是否满足
+	 * @param mpb
+	 * @param restBean
+	 * @return
+	 */
+	public boolean validateRestBean(MsgBean mpb) {
+		try{
+			BeanValidators.validateWithException(validator, mpb);
+		}catch(ConstraintViolationException ex){
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * 逍遥rest接口的参数格式是否满足
+	 * @param mpb
+	 * @param restBean
+	 * @return
+	 */
+	public boolean validateRestBean(MsgBean mpb,ResponseRestBean restBean) {
+		try{
+			BeanValidators.validateWithException(validator, mpb);
+		}catch(ConstraintViolationException ex){
+			return false;
+		}
+		return true;
 	}
 	
 	/**

@@ -3,7 +3,7 @@
   <groupId>io.raycom</groupId>
   <artifactId>raycom-build-pom</artifactId>
   <packaging>pom</packaging>
-  <version>2.0.2_20171128</version>
+  <version>2.0.2_20180724</version>
   
   <distributionManagement>
         <repository>
@@ -12,7 +12,14 @@
             <url>http://139.196.191.0:8888/repository/maven-releases/</url>
         </repository>
     </distributionManagement>
-  
+  <repositories>
+		<!-- 如有Nexus私服, 取消注释并指向正确的服务器地址.-->
+		<repository>
+			<id>raycom</id>
+			<name>Team Nexus Repository</name>
+			<url>http://139.196.191.0:8888/repository/maven-public/</url>
+		</repository> 
+	</repositories>
   
 	<modules>  
         <module>../raycom-core</module>  
@@ -25,6 +32,9 @@
         <module>../raycom-devoops-war</module>  
         <module>../raycom-devoops-static</module>  
         <module>../raycom-devoops-pom</module>  
+        <!-- <module>../raycom-hui-war</module>  
+        <module>../raycom-hui-static</module>  
+        <module>../raycom-hui-pom</module>   -->
         <module>../raycom-framework-pom</module>  
     </modules>  
     

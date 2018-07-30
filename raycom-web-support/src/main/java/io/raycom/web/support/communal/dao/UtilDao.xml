@@ -63,4 +63,100 @@
 	   SELECT org_name FROM  tb_usc_org  WHERE org_id =  #{officeId} AND rownum=1
 	</select>
 	
+	<!-- 获取非管控静态资源 -->
+	<select id="getStaticResourceByDataKey" resultType="rdata" parameterType="String" >
+		select distinct res.data_code      "dataCode",
+                res.resource_name  "name",
+                res.resource_value "value"
+		  from COM_DATA_RESOURCE res, COM_DATA datap
+		 where res.data_id = datap.data_id
+		   and res.resource_line_type = 'static'
+		   and datap.del_flag = 'N'
+		   and res.del_flag = 'N'
+		   and datap.control_flag = 0
+		   and datap.data_code = #{dataCode}
+		 order by res.data_code
+	</select>
+	
+	<!-- 获取非管控动态资源 -->
+	<select id="getDynamicResourceByDataKey" resultType="rdata" parameterType="String" >
+		select distinct res.data_code      "dataCode",
+                res.resource_name  "name",
+                res.resource_value "value"
+		  from COM_DATA_RESOURCE res, COM_DATA datap
+		 where res.data_id = datap.data_id
+		   and res.resource_line_type = 'dynamic'
+		   and datap.del_flag = 'N'
+		   and res.del_flag = 'N'
+		   and datap.control_flag = 0
+		   and datap.data_code = #{dataCode}
+		 order by res.data_code
+	</select>
+	
+		<!-- 执行动态sql获取数据 -->
+	<select id="dynamicSql" resultType="rdata" parameterType="String" >
+		${dynamic}
+	</select>
+	
+	
+	<!-- 获取静态资源 -->
+	<select id="getStaticResourceByUserId" resultType="rdata" parameterType="rdata" >
+		select distinct res.data_code "dataCode",
+                res.resource_name     "name",
+                res.resource_value    "value"
+		  from COM_DATA_RESOURCE res,
+		       com_position_data  datap,
+		       COM_position_USER  userp
+		 where res.data_id = datap.data_id
+		   and res.resource_line_type = 'static'
+		   and userp.positon_id = datap.positon_id
+		   and instr(datap.data_resource_id, res.data_resource_id) > 0      
+		   and datap.del_flag = 'N'
+		   and res.del_flag = 'N'
+		   and userp.del_flag = 'N'
+		   and userp.user_id = #{userId}
+		 order by res.data_code
+	</select>
+	
+	<!-- 获取动态态资源 -->
+	<select id="getDynamicResourceByUserId" resultType="rdata" parameterType="rdata" >
+		select  distinct res.data_code "dateCode",
+                res.resource_name     "name",
+                res.resource_value    "value"
+		  from COM_DATA_RESOURCE res,
+		       com_position_data  datap,
+		       COM_position_USER  userp
+		 where res.data_id = datap.data_id
+		   and res.resource_line_type = 'dynamic'
+		   and userp.positon_id = datap.positon_id
+		   and instr(datap.data_resource_id, res.data_resource_id) > 0      
+		   and datap.del_flag = 'N'
+		   and res.del_flag = 'N'
+		   and userp.del_flag = 'N'
+		   and userp.user_id = #{userId}
+		 order by res.data_code
+	</select>
+	
+	<!-- 获取静态资源 -->
+	<select id="getStaticResourceAll" resultType="rdata" parameterType="rdata" >
+		select distinct res.data_code "dataCode",
+                res.resource_name     "name",
+                res.resource_value    "value"
+		  from COM_DATA_RESOURCE res
+		 where res.resource_line_type = 'static'    
+		   and res.del_flag = 'N'
+		 order by res.data_code
+	</select>
+	
+	<!-- 获取动态态资源 -->
+	<select id="getDynamicResourceAll" resultType="rdata" parameterType="rdata" >
+		select  distinct res.data_code "dateCode",
+                res.resource_name     "name",
+                res.resource_value    "value"
+		  from COM_DATA_RESOURCE res
+		 where res.resource_line_type = 'dynamic'
+		   and res.del_flag = 'N'
+		 order by res.data_code
+	</select>
+	
 </mapper>

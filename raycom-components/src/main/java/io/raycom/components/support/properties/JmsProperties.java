@@ -9,6 +9,9 @@ public class JmsProperties {
 	@Value("${mq.model}")
 	public String mqModel;
 	
+	@Value("${machine.mq.name}")
+	public String machineName;
+	
 	@Value("${mq.run}")
 	public String isRun;
 	

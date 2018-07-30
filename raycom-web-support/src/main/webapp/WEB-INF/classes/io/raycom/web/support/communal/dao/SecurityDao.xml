@@ -118,7 +118,7 @@
 		          a.target,
 		          a.icon,
 		          a.sort,
-		          (select count(cm.menu_id) from  com_menu cm where cm.parent_id=a.menu_id) "hasChild",
+		          (select count(cm.menu_id) from  com_menu cm where cm.parent_id=a.menu_id and cm.del_flag='N') "hasChild",
 		          a.permission
 		     FROM com_menu a
 		   WHERE  del_flag='N'
@@ -160,7 +160,7 @@
 	          a.target,
 	          a.icon,
 	          a.sort,
-	          ( select count(cm.menu_id) from  com_menu cm where cm.parent_id=a.menu_id) "hasChild"
+	          ( select count(cm.menu_id) from  com_menu cm where cm.parent_id=a.menu_id and cm.del_flag='N') "hasChild"
 	    FROM  com_menu a,
           	  com_role_menu rm ,
               com_role_user ur
@@ -186,7 +186,7 @@
 	          a.target,
 	          a.icon,
 	          a.sort,
-	          ( select count(cm.menu_id) from  com_menu cm where cm.parent_id=a.menu_id) "hasChild",
+	          ( select count(cm.menu_id) from  com_menu cm where cm.parent_id=a.menu_id and cm.del_flag='N') "hasChild",
 	          a.permission
 	     FROM com_menu a
 	   WHERE  del_flag='N'
@@ -218,5 +218,6 @@
 			login_Date = #{loginDate} 
 		WHERE user_id = #{id}
 	</update>
+	
 	
 </mapper>

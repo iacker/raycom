@@ -15,6 +15,7 @@
 			request_uri, 
 			method, 
 			params, 
+			ip,
 			exception
 		) VALUES (
 			#{id}, 
@@ -27,6 +28,7 @@
 			#{requestUri}, 
 			#{method}, 
 			#{params,jdbcType=CLOB}, 
+			#{ip},
 			#{exception,jdbcType=CLOB}
 		)
 	</insert>
