@@ -164,6 +164,7 @@
 		select db.db_driver_class "driverClass",
 		       db.db_url          "url",
 		       db.db_id           "dbId",
+		       db.db_name         "dbName",
 		       db.db_username     "username",
 		       db.db_password     "password"
 		  from TB_USC_DATABASE db

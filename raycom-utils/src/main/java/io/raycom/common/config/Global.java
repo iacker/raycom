@@ -24,7 +24,8 @@ public class Global {
 	
 	 private static final ThreadLocal<String> local = new InheritableThreadLocal<String>();
 	 
-	 private static final ThreadLocal<String> databaseTmp = new InheritableThreadLocal<String>();
+	 private static final ThreadLocal<String> syslocal = new InheritableThreadLocal<String>();
+	 
 	    
 	/**
 	 * 当前对象实例
@@ -71,24 +72,32 @@ public class Global {
     }
    
     public static void setSysOrgId(String sysOrgId){
+    	System.out.println("当前线程加入数据源ID为："+Thread.currentThread().getName()+"/"+sysOrgId);
         local.set(sysOrgId);
     }
    
 	public static void clearSysOrgId(){
+		System.out.println("当前线程清除数据源："+Thread.currentThread().getName());
         local.remove();
+        clearSysLocalOrgId();
     }
 	
-	public static void clearDatabaseTmp(){
-		databaseTmp.remove();
-    }
+	public static String getSysLocalOrgId(){
+		return syslocal.get();
+	}
 	
-	public static String getDatabaseTmp(){
-        return databaseTmp.get();
-    }
-   
-    public static void setDatabaseTmp(String sysOrgId){
-    	databaseTmp.set(sysOrgId);
-    }
+	public static void setSysLocalOrgId(String sysOrgId){
+		
+		clearSysOrgId();
+		clearSysLocalOrgId();
+		System.out.println("当前线程加入临时数据源ID为："+Thread.currentThread().getName()+"/"+sysOrgId);
+		syslocal.set(sysOrgId);
+	}
+	
+	public static void clearSysLocalOrgId(){
+		System.out.println("当前线程清除临时数据源："+Thread.currentThread().getName());
+		syslocal.remove();
+	}
 	
 	/**
 	 * 获取当前对象实例

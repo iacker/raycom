@@ -10,6 +10,7 @@ import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.session.InvalidSessionException;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Value;
 
 import io.raycom.common.cache.CacheUtils;
 import io.raycom.common.config.Constant;
@@ -30,7 +31,6 @@ public class UserUtils {
 
 	private static UtilDao utilDao ;
 	
-
 	private static UtilDao getUtilDao(){
 		if (utilDao ==  null){
 			utilDao = SpringContextHolder.getBean(UtilDao.class);
@@ -308,13 +308,32 @@ public class UserUtils {
 	 * @return 取不到返回 new SystemUser()
 	 */
 	public static String getSysOrgId(){
-		if(!StringUtils.isEmpty(Global.getDatabaseTmp())) {
-			return Global.getDatabaseTmp();
+		System.out.println("当前线程为："+Thread.currentThread().getName()+"/"+Global.getSysOrgId());
+		
+		String dataSourceName = Global.getSysOrgId();
+    	if(!StringUtils.isEmpty(dataSourceName)) {
+    		System.out.println("切换sysCache数据源为"+dataSourceName);
+    		return dataSourceName;
+    	}
+		
+		dataSourceName =UserUtils.getUser().getDatabaseId();
+		if(!StringUtils.isEmpty(dataSourceName)) {
+			System.out.println("切换database数据源为"+dataSourceName);
+			return dataSourceName;
 		}
-		String dataSourceName =UserUtils.getUser().getCompanyId();
-    	if(StringUtils.isEmpty(dataSourceName))
-    		dataSourceName = Global.getSysOrgId();
-    	
+		
+		dataSourceName =UserUtils.getUser().getCompanyId();
+		if(!StringUtils.isEmpty(dataSourceName)) {
+			System.out.println("切换用户数据源为"+dataSourceName+",对应用户ID为："+UserUtils.getUser().getLoginName());
+			return dataSourceName;
+		}
+		
+		dataSourceName =Global.getSysLocalOrgId();
+		if(!StringUtils.isEmpty(dataSourceName)) {
+			System.out.println("切换sysLocal数据源为"+dataSourceName);
+			return dataSourceName;
+		}
+    	System.out.println("切换空数据源");
 		return dataSourceName;
 	}
 

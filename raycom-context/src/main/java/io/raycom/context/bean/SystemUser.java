@@ -49,6 +49,7 @@ public class SystemUser implements Serializable  {
 
 	private String no;		// 工号
 	private String companyId;	// 归属公司
+	private String databaseId;	// 关联数据库
 	private String officeId;	// 归属部门
 	
 	private RData userData;	// 扩展字段
@@ -267,7 +268,7 @@ public class SystemUser implements Serializable  {
 	}
 	
 	public  boolean isAdmin(String id){
-		return this.isAdmin||(id != null && "10000001".equals(id));
+		return this.isAdmin||("10000001".equals(id));
 	}
 	
 	@Override
@@ -281,6 +282,14 @@ public class SystemUser implements Serializable  {
 
 	public void setCompanyId(String companyId) {
 		this.companyId = companyId;
+	}
+
+	public String getDatabaseId() {
+		return databaseId;
+	}
+
+	public void setDatabaseId(String databaseId) {
+		this.databaseId = databaseId;
 	}
 
 	public String getOfficeId() {

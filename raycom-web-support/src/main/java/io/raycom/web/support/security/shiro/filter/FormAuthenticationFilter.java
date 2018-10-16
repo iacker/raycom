@@ -47,7 +47,7 @@ public class FormAuthenticationFilter extends org.apache.shiro.web.filter.authc.
 
 	protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
 		String sysOrgId = getSysOrgId(request);
-		Global.setSysOrgId(sysOrgId);
+		Global.setSysLocalOrgId(sysOrgId);
 		
 		AuthenticationToken atoken=null;
 		String jwt = ((HttpServletRequest)request).getHeader(DEFAULT_JWT_PARAM);
