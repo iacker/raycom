@@ -6,7 +6,7 @@
 	<parent>  
         <groupId>io.raycom</groupId>
   		<artifactId>raycom-parent-pom</artifactId>
-  		<version>2.0.2_20180724</version> 
+  		<version>2.0.2_20180904</version> 
         <relativePath>../raycom-parent-pom/pom.xml</relativePath>  
     </parent>  
      

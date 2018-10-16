@@ -71,7 +71,7 @@ public class SecurityService extends BaseService implements InitializingBean {
 		}
 		user.setRoleList(securityDao.getRoleListByUserId(user.getId()));
 		CacheUtils.put(Constant.USER_CACHE, Constant.USER_CACHE_ID_ + user.getId(), user);
-		CacheUtils.put(Constant.USER_CACHE, Constant.USER_CACHE_LOGIN_NAME_ + user.getLoginName(), user);
+		CacheUtils.put(UserUtils.getSysOrgId()+Constant.USER_CACHE, Constant.USER_CACHE_LOGIN_NAME_ + user.getLoginName(), user);
 		return user;
 	}
 	

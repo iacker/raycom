@@ -13,6 +13,7 @@ import com.google.common.collect.Maps;
 
 import io.raycom.utils.properties.PropertiesLoader;
 import io.raycom.utils.string.StringUtils;
+import io.raycom.utils.user.UserAgentUtils;
 
 /**
  * 全局配置类
@@ -20,7 +21,11 @@ import io.raycom.utils.string.StringUtils;
  * @version 2014-06-25
  */
 public class Global {
-
+	
+	 private static final ThreadLocal<String> local = new InheritableThreadLocal<String>();
+	 
+	 private static final ThreadLocal<String> databaseTmp = new InheritableThreadLocal<String>();
+	    
 	/**
 	 * 当前对象实例
 	 */
@@ -59,6 +64,31 @@ public class Global {
 	 * 上传文件基础虚拟路径
 	 */
 	public static final String USERFILES_BASE_URL = "/userfiles/";
+	
+
+	public static String getSysOrgId(){
+        return local.get();
+    }
+   
+    public static void setSysOrgId(String sysOrgId){
+        local.set(sysOrgId);
+    }
+   
+	public static void clearSysOrgId(){
+        local.remove();
+    }
+	
+	public static void clearDatabaseTmp(){
+		databaseTmp.remove();
+    }
+	
+	public static String getDatabaseTmp(){
+        return databaseTmp.get();
+    }
+   
+    public static void setDatabaseTmp(String sysOrgId){
+    	databaseTmp.set(sysOrgId);
+    }
 	
 	/**
 	 * 获取当前对象实例

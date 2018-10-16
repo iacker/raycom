@@ -45,5 +45,7 @@ public class Constant {
 	public static final String USER_CACHE_RESOURCE_STR = "_str";
 	public static final String USER_CACHE_RESOURCE_KEY = "total_";
 	
+	public static final String SYS_DATASOURCE = "sysdbList_";
+	
 }
  

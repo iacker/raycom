@@ -1,7 +1,7 @@
 /**
  * Copyright &copy; 2012-2014 <a href="https://github.com/csq/raycom">Raycom</a> All rights reserved.
  */
-package io.raycom.web.support.security.shiro.authc;
+package io.raycom.web.support.security.shiro.token;
 
 /**
  * 用户和密码（包含验证码）令牌类
@@ -14,6 +14,7 @@ public class UsernamePasswordToken extends org.apache.shiro.authc.UsernamePasswo
 
 	private String captcha;
 	private boolean mobileLogin;
+	private boolean appLogin;
 	
 	public UsernamePasswordToken() {
 		super();
@@ -24,6 +25,14 @@ public class UsernamePasswordToken extends org.apache.shiro.authc.UsernamePasswo
 		super(username, password, rememberMe, host);
 		this.captcha = captcha;
 		this.mobileLogin = mobileLogin;
+		this.appLogin = false;
+	}
+	public UsernamePasswordToken(String username, char[] password,
+			boolean rememberMe, String host, String captcha, boolean mobileLogin, boolean appLogin) {
+		super(username, password, rememberMe, host);
+		this.captcha = captcha;
+		this.mobileLogin = mobileLogin;
+		this.appLogin = appLogin;
 	}
 
 	public String getCaptcha() {
@@ -36,6 +45,10 @@ public class UsernamePasswordToken extends org.apache.shiro.authc.UsernamePasswo
 
 	public boolean isMobileLogin() {
 		return mobileLogin;
+	}
+	
+	public boolean isAppLogin() {
+		return appLogin;
 	}
 	
 }

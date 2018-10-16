@@ -159,4 +159,15 @@
 		 order by res.data_code
 	</select>
 	
+	<!-- 获取数据库配置信息 -->
+	<select id="getDynamicDataSource" resultType="rdata" >
+		select db.db_driver_class "driverClass",
+		       db.db_url          "url",
+		       db.db_id           "dbId",
+		       db.db_username     "username",
+		       db.db_password     "password"
+		  from TB_USC_DATABASE db
+		 where db.del_flag = 'N'
+	</select>
+	
 </mapper>

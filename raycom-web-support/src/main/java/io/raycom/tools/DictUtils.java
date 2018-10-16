@@ -16,6 +16,7 @@ import io.raycom.core.collection.RData;
 import io.raycom.core.collection.RMultiData;
 import io.raycom.utils.dao.DaoUtil;
 import io.raycom.web.support.communal.dao.DictDao;
+import io.raycom.web.support.utils.user.UserUtils;
 
 /**
  * 字典工具类
@@ -65,7 +66,7 @@ public class DictUtils {
 	
 	@SuppressWarnings("unchecked")
 	public static RMultiData getDictList(String type){
-		RData dictMap = (RData)CacheUtils.get(CACHE_DICT_MAP);
+		RData dictMap = (RData)CacheUtils.get(UserUtils.getSysOrgId()+CACHE_DICT_MAP);
 		if (dictMap==null){
 			dictMap =new RData();
 			RMultiData rm = DaoUtil.ConvertList2CMulti(dictDao.findAllList());
@@ -80,7 +81,7 @@ public class DictUtils {
 					mulDict.addRData(rm.getRData(i));
 				}
 			}
-			CacheUtils.put(CACHE_DICT_MAP, dictMap);
+			CacheUtils.put(UserUtils.getSysOrgId()+CACHE_DICT_MAP, dictMap);
 		}
 		RMultiData dictList = (RMultiData)dictMap.get(type);
 		if (dictList == null){

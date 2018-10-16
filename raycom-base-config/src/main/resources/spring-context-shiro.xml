@@ -89,7 +89,7 @@
         <property name="sessionDao" ref="sessionDAO" />
 	</bean>
 	
-	<bean id="formAuthenticationFilter" class="io.raycom.web.support.security.shiro.authc.FormAuthenticationFilter"/>
+	<bean id="formAuthenticationFilter" class="io.raycom.web.support.security.shiro.filter.FormAuthenticationFilter"/>
 	
 	<!-- 定义授权缓存管理器 -->
 	<bean id="shiroCacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">

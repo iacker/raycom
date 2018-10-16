@@ -22,14 +22,15 @@ public class Principal implements Serializable {
 		private String loginName; // 登录名
 		private String name; // 姓名
 		private boolean mobileLogin; // 是否手机登录
+		private boolean appLogin; // 是否手机登录
 		private List<SystemRole> role; // 是否手机登录
-		
 
-		public Principal(SystemUser user, boolean mobileLogin,List<SystemRole> role) {
+		public Principal(SystemUser user, boolean mobileLogin,List<SystemRole> role, boolean appLogin) {
 			this.id = user.getId();
 			this.loginName = user.getLoginName();
 			this.name = user.getName();
 			this.mobileLogin = mobileLogin;
+			this.appLogin = appLogin;
 			this.role = role;
 		}
 
@@ -60,6 +61,14 @@ public class Principal implements Serializable {
 		
 		public void setMobileLogin(boolean mobileLogin) {
 			this.mobileLogin=mobileLogin;
+		}
+
+		public boolean isAppLogin() {
+			return appLogin;
+		}
+
+		public void setAppLogin(boolean appLogin) {
+			this.appLogin = appLogin;
 		}
 
 		/**

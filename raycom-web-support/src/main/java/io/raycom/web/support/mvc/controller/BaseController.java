@@ -36,6 +36,7 @@ public abstract class BaseController extends RaycomController{
 		page = null;
 		rdata.putAll(map);
 		rdata.put("currentUser", UserUtils.getUser().getId());
+		rdata.put("currentOrgId", UserUtils.getUser().getCompanyId());
 		if(rdata.containsKey("draw")){
 			page= new Page<RData>(rdata);
 			processPageData(request.getRequestURI());

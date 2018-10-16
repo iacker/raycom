@@ -13,14 +13,13 @@ import org.apache.shiro.subject.Subject;
 
 import io.raycom.common.cache.CacheUtils;
 import io.raycom.common.config.Constant;
+import io.raycom.common.config.Global;
 import io.raycom.context.bean.SystemUser;
 import io.raycom.core.application.SpringContextHolder;
 import io.raycom.core.collection.RData;
 import io.raycom.utils.string.StringUtils;
 import io.raycom.web.bean.Principal;
-import io.raycom.web.support.communal.dao.SecurityDao;
 import io.raycom.web.support.communal.dao.UtilDao;
-import io.raycom.web.support.security.service.SecurityService;
 
 /**
  * 用户工具类
@@ -53,7 +52,7 @@ public class UserUtils {
 			}
 			user.setRoleList(getUtilDao().getRoleListByUserId(id));
 			CacheUtils.put(Constant.USER_CACHE, Constant.USER_CACHE_ID_ + user.getId(), user);
-			CacheUtils.put(Constant.USER_CACHE, Constant.USER_CACHE_LOGIN_NAME_ + user.getLoginName(), user);
+			CacheUtils.put(getSysOrgId()+Constant.USER_CACHE, Constant.USER_CACHE_LOGIN_NAME_ + user.getLoginName(), user);
 		}
 		return user;
 	}
@@ -64,7 +63,7 @@ public class UserUtils {
 	 * @return 取不到返回null
 	 */
 	public static SystemUser getByLoginName(String loginName){
-		SystemUser user = (SystemUser)CacheUtils.get(Constant.USER_CACHE, Constant.USER_CACHE_LOGIN_NAME_ + loginName);
+		SystemUser user = (SystemUser)CacheUtils.get(getSysOrgId()+Constant.USER_CACHE, Constant.USER_CACHE_LOGIN_NAME_ + loginName);
 		if (user == null){
 			user = getUtilDao().getByLoginName(loginName);
 			if (user == null){
@@ -72,7 +71,7 @@ public class UserUtils {
 			}
 			user.setRoleList(getUtilDao().getRoleListByUserId(user.getId()));
 			CacheUtils.put(Constant.USER_CACHE, Constant.USER_CACHE_ID_ + user.getId(), user);
-			CacheUtils.put(Constant.USER_CACHE, Constant.USER_CACHE_LOGIN_NAME_ + user.getLoginName(), user);
+			CacheUtils.put(getSysOrgId()+Constant.USER_CACHE, Constant.USER_CACHE_LOGIN_NAME_ + user.getLoginName(), user);
 		}
 		return user;
 	}
@@ -87,13 +86,13 @@ public class UserUtils {
 			officeId = getUser().getOfficeId();
 		if(StringUtils.isEmpty(officeId)) return "";
 		
-		String officeName = (String)CacheUtils.get(Constant.USER_CACHE, Constant.USER_CACHE_OFFICE_ID_ + officeId);
+		String officeName = (String)CacheUtils.get(getSysOrgId()+Constant.USER_CACHE, Constant.USER_CACHE_OFFICE_ID_ + officeId);
 		if (officeName == null){
 			officeName = getUtilDao().getOfficeNameById(officeId);
 			if (officeName == null){
 				return "";
 			}
-			CacheUtils.put(Constant.USER_CACHE, Constant.USER_CACHE_OFFICE_ID_ + officeId, officeName);
+			CacheUtils.put(getSysOrgId()+Constant.USER_CACHE, Constant.USER_CACHE_OFFICE_ID_ + officeId, officeName);
 		}
 		return officeName;
 	}
@@ -236,7 +235,7 @@ public class UserUtils {
 	}
 	
 	private static ArrayList<RData> getResourceCodeById(String resourceData){
-		ArrayList<RData> dataList = (ArrayList<RData>)CacheUtils.get(Constant.USER_CACHE_RESOURCE_KEY+resourceData);
+		ArrayList<RData> dataList = (ArrayList<RData>)CacheUtils.get(getSysOrgId()+Constant.USER_CACHE_RESOURCE_KEY+resourceData);
 		if(dataList==null) {
 			dataList = getUtilDao().getStaticResourceByDataKey(resourceData);
 			ArrayList<RData>  dynamicResource = getUtilDao().getDynamicResourceByDataKey(resourceData);
@@ -251,7 +250,7 @@ public class UserUtils {
 					dataList.add(temp);
 				}
 			}
-			CacheUtils.put(Constant.USER_CACHE_RESOURCE_KEY+resourceData, dataList);
+			CacheUtils.put(getSysOrgId()+Constant.USER_CACHE_RESOURCE_KEY+resourceData, dataList);
 			
 		}
 		return dataList;
@@ -265,7 +264,7 @@ public class UserUtils {
 	
 	
 	public static void clearResourceCodeCache(String resourceData){
-		CacheUtils.remove(Constant.USER_CACHE_RESOURCE_KEY+resourceData);
+		CacheUtils.remove(getSysOrgId()+Constant.USER_CACHE_RESOURCE_KEY+resourceData);
 	}
 	
 	/**
@@ -284,8 +283,9 @@ public class UserUtils {
 	 */
 	public static void clearCache(SystemUser user){
 		CacheUtils.remove(Constant.USER_CACHE, Constant.USER_CACHE_ID_ + user.getId());
-		CacheUtils.remove(Constant.USER_CACHE, Constant.USER_CACHE_LOGIN_NAME_ + user.getLoginName());
+		CacheUtils.remove(getSysOrgId()+Constant.USER_CACHE, Constant.USER_CACHE_LOGIN_NAME_ + user.getLoginName());
 	}
+	
 	/**
 	 * 获取当前用户
 	 * @return 取不到返回 new SystemUser()
@@ -301,6 +301,21 @@ public class UserUtils {
 		}
 		// 如果没有登录，则返回实例化空的User对象。
 		return new SystemUser();
+	}
+	
+	/**
+	 * 获取当前用户
+	 * @return 取不到返回 new SystemUser()
+	 */
+	public static String getSysOrgId(){
+		if(!StringUtils.isEmpty(Global.getDatabaseTmp())) {
+			return Global.getDatabaseTmp();
+		}
+		String dataSourceName =UserUtils.getUser().getCompanyId();
+    	if(StringUtils.isEmpty(dataSourceName))
+    		dataSourceName = Global.getSysOrgId();
+    	
+		return dataSourceName;
 	}
 
 	

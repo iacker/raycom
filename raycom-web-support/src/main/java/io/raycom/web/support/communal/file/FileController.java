@@ -50,7 +50,8 @@ public class FileController extends BaseController{
 	
     @RequestMapping(value = "${adminPath}/file/upload",method = RequestMethod.POST)  
     @ResponseBody
-	public  RData upload(@RequestParam("file")  MultipartFile file ) {  
+	public  RData upload(@RequestParam("file")  MultipartFile file,HttpServletResponse response ) {  
+    	response.setHeader("Access-Control-Allow-Origin","*");
 		String originalFilename = file.getOriginalFilename();
 	    String fileExt = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
 	    String fileName;
@@ -94,6 +95,7 @@ public class FileController extends BaseController{
     
     @RequestMapping("${adminPath}/file/showImg")
     public String showImg(HttpServletRequest request, HttpServletResponse response) {
+    	response.setHeader("Access-Control-Allow-Origin","*");
     	rdata =fileService.getFileData(request,rdata);
     	
         response.setCharacterEncoding("utf-8");
@@ -145,14 +147,16 @@ public class FileController extends BaseController{
     	String fileName=new String(rdata.getString("fileName").getBytes("UTF-8"),"iso-8859-1");
         HttpHeaders headers = new HttpHeaders();  
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);  
+        headers.set("Access-Control-Allow-Origin","*");
         headers.setContentDispositionFormData("attachment",fileName);  
         return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(new File(path)),  
                                           headers, HttpStatus.OK);  
     } 
     
     @RequestMapping("${adminPath}/file/downloadZip")
-	public ResponseEntity<byte[]> downloadZip(HttpServletRequest request) throws IOException {  
-	    return fileService.downLoadZipFile((RData)request.getAttribute("file"));
+	public ResponseEntity<byte[]> downloadZip(HttpServletRequest request, HttpServletResponse response) throws IOException {  
+		response.setHeader("Access-Control-Allow-Origin","*");
+		return fileService.downLoadZipFile((RData)request.getAttribute("file"));
 	} 
 
 }

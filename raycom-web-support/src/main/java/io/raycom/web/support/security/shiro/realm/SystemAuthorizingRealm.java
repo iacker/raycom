@@ -37,8 +37,9 @@ import io.raycom.web.controller.Servlets;
 import io.raycom.web.servlet.ValidateCodeServlet;
 import io.raycom.web.support.security.LoginValidater;
 import io.raycom.web.support.security.service.SecurityService;
-import io.raycom.web.support.security.shiro.authc.UsernamePasswordToken;
 import io.raycom.web.support.security.shiro.session.SessionDAO;
+import io.raycom.web.support.security.shiro.token.UsernamePasswordToken;
+import io.raycom.web.support.security.shiro.util.Commons;
 import io.raycom.web.support.utils.user.UserUtils;
 
 /**
@@ -54,11 +55,17 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 	
 	private SessionDAO sessionDao;
 
+	
+	public Class<?> getAuthenticationTokenClass() {
+		return UsernamePasswordToken.class;
+	}
+	
 	/**
 	 * 认证回调函数, 登录时调用
 	 */
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) {
+		 
 		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
 		
 		//int activeSessionSize = securityService.getSessionDao().getActiveSessions(false).size();
@@ -66,9 +73,8 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 		if (logger.isDebugEnabled()){
 			logger.debug("login submit, active session size: {}, username: {}", activeSessionSize, token.getUsername());
 		}
-		
 		// 校验登录验证码
-		if (LoginValidater.isValidateCodeLogin(token.getUsername(), false, false)){
+		if (!token.isAppLogin()&&LoginValidater.isValidateCodeLogin(token.getUsername(), false, false)){
 			Session session = UserUtils.getSession();
 			String code = (String)session.getAttribute(ValidateCodeServlet.VALIDATE_CODE);
 			if (token.getCaptcha() == null || !token.getCaptcha().toUpperCase().equals(code)){
@@ -78,13 +84,13 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 		
 		// 校验用户名密码
 		SystemUser user = securityService.getUserByLoginName(token.getUsername());
-		if (user != null) {
+		if (user != null) { 
 			List<SystemRole> userRole = securityService.findRole(user.getId());
 			if (Global.NO.equals(user.getLoginFlag())){
 				throw new AuthenticationException("msg:该帐号已禁止登录.");
 			}
 			byte[] salt = Encodes.decodeHex(user.getPassword().substring(0,16));
-			return new SimpleAuthenticationInfo(new Principal(user, token.isMobileLogin(),userRole), 
+			return new SimpleAuthenticationInfo(new Principal(user, token.isMobileLogin(),userRole,token.isAppLogin()), 
 					user.getPassword().substring(16), ByteSource.Util.bytes(salt), getName());
 		} else {
 			throw new AuthenticationException("msg:该用户名不存在，请确认.");
@@ -150,6 +156,8 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 			// 更新登录IP和时间
 			securityService.updateUserLoginInfo(user);
 			// 记录登录日志
+			Commons.getJwt();
+			
 			 //LogUtils.saveLog(Servlets.getRequest(), "系统登录");  
 			RaycomEventPublisher.publishEvent(new LoginEvent(user));
 			RaycomEventPublisher.publishEvent(new LoginLogEvent(Servlets.getRequest()));

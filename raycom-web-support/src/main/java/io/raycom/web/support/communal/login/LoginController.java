@@ -28,7 +28,7 @@ import io.raycom.web.bean.Principal;
 import io.raycom.web.servlet.ValidateCodeServlet;
 import io.raycom.web.support.mvc.controller.BaseController;
 import io.raycom.web.support.security.LoginValidater;
-import io.raycom.web.support.security.shiro.authc.FormAuthenticationFilter;
+import io.raycom.web.support.security.shiro.filter.FormAuthenticationFilter;
 import io.raycom.web.support.security.shiro.session.SessionDAO;
 import io.raycom.web.support.utils.user.UserUtils;
 
@@ -67,7 +67,7 @@ public class LoginController extends BaseController{
 		}
 		
 		// 如果已经登录，则跳转到管理首页
-		if(principal != null && !principal.isMobileLogin()){
+		if(principal != null && !principal.isMobileLogin()&&!principal.isAppLogin()){
 			logger.debug("principal, active session MobileLogin");
 			return "redirect:" + adminPath;
 		}
@@ -78,6 +78,11 @@ public class LoginController extends BaseController{
 			else
 				return renderString(response, principal);
 		}
+		
+		if(principal != null &&principal.isAppLogin()) {
+			return renderString(response, UserUtils.getCache("jwt"));
+		}
+		
 		logger.debug("principal, active session loginPage");
 		return loginPage;
 	}
@@ -127,6 +132,10 @@ public class LoginController extends BaseController{
 		if (mobile){
 	        return renderString(response, model);
 		}
+		/*if(principal.isAppLogin()) {
+			return renderString(response, UserUtils.getCache("jwt"));
+		}*/
+		
 		
 		return loginPage;
 	}
@@ -160,6 +169,10 @@ public class LoginController extends BaseController{
 		if (principal.isMobileLogin()){
 				return renderString(response, principal);
 		}
+		if(principal.isAppLogin()) {
+			return renderString(response, UserUtils.getCache("jwt"));
+		}
+		
 		
 		return mainPage;
 	}

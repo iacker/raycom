@@ -1,7 +1,7 @@
 /**
  * Copyright &copy; 2012-2014 <a href="https://github.com/csq/raycom">Raycom</a> All rights reserved.
  */
-package io.raycom.web.support.security.shiro.authc;
+package io.raycom.web.support.security.shiro.filter;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -15,8 +15,12 @@ import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.raycom.common.config.Global;
 import io.raycom.common.mapper.JsonMapper;
 import io.raycom.utils.string.StringUtils;
+import io.raycom.web.support.security.shiro.token.JwtToken;
+import io.raycom.web.support.security.shiro.token.UsernamePasswordToken;
+import io.raycom.web.support.security.shiro.util.Commons;
 
 /**
  * 表单验证（包含验证码）过滤类
@@ -27,42 +31,76 @@ public class FormAuthenticationFilter extends org.apache.shiro.web.filter.authc.
 
 	public static final String DEFAULT_CAPTCHA_PARAM = "validateCode";
 	public static final String DEFAULT_MOBILE_PARAM = "mobileLogin";
+	public static final String DEFAULT_APP_PARAM = "appLogin";
 	public static final String DEFAULT_MESSAGE_PARAM = "message";
+	public static final String DEFAULT_JWT_PARAM = "Authorization";
+	public static final String DEFAULT_HOST_PARAM = "deviceID";
+	public static final String DEFAULT_LOGIN_ORG_PARAM = "loginOrgId";
 
 	private String captchaParam = DEFAULT_CAPTCHA_PARAM;
 	private String mobileLoginParam = DEFAULT_MOBILE_PARAM;
+	private String appLoginParam = DEFAULT_APP_PARAM;
 	private String messageParam = DEFAULT_MESSAGE_PARAM;
+	private String loginOrgParam = DEFAULT_LOGIN_ORG_PARAM;
 	
     private static final Logger log = LoggerFactory.getLogger(FormAuthenticationFilter.class);
 
 	protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
-		String username = getUsername(request);
-		String password = getPassword(request);
-		if (password==null){
-			password = "";
+		String sysOrgId = getSysOrgId(request);
+		Global.setSysOrgId(sysOrgId);
+		
+		AuthenticationToken atoken=null;
+		String jwt = ((HttpServletRequest)request).getHeader(DEFAULT_JWT_PARAM);
+		if(StringUtils.isEmpty(jwt)) {
+			String username = getUsername(request);
+			String password = getPassword(request);
+			if (password==null){
+				password = "";
+			}
+			boolean rememberMe = isRememberMe(request);
+			String host = StringUtils.getRemoteAddr((HttpServletRequest)request);
+			String captcha = getCaptcha(request);
+			boolean mobile = isMobileLogin(request);
+			boolean appLogin = isAppLogin(request);
+			atoken =  new UsernamePasswordToken(username, password.toCharArray(), rememberMe, host, captcha, mobile,appLogin);
+		}else {
+			String host = ((HttpServletRequest)request).getHeader(DEFAULT_HOST_PARAM);
+			atoken =  new JwtToken(host,jwt);
 		}
-		boolean rememberMe = isRememberMe(request);
-		String host = StringUtils.getRemoteAddr((HttpServletRequest)request);
-		String captcha = getCaptcha(request);
-		boolean mobile = isMobileLogin(request);
-		return new UsernamePasswordToken(username, password.toCharArray(), rememberMe, host, captcha, mobile);
+		return atoken;
+		
 	}
 
 	public String getCaptchaParam() {
 		return captchaParam;
 	}
 
+	public String getLoginOrgParam() {
+		return loginOrgParam;
+	}
+
 	protected String getCaptcha(ServletRequest request) {
 		return WebUtils.getCleanParam(request, getCaptchaParam());
+	}
+	
+	protected String getSysOrgId(ServletRequest request) {
+		return WebUtils.getCleanParam(request, getLoginOrgParam());
 	}
 
 	public String getMobileLoginParam() {
 		return mobileLoginParam;
 	}
 	
+	public String getAppLoginParam() {
+		return appLoginParam;
+	}
+	
 	protected boolean isMobileLogin(ServletRequest request) {
         return WebUtils.isTrue(request, getMobileLoginParam());
     }
+	protected boolean isAppLogin(ServletRequest request) {
+		return WebUtils.isTrue(request, getAppLoginParam());
+	}
 	
 	public String getMessageParam() {
 		return messageParam;
@@ -79,6 +117,15 @@ public class FormAuthenticationFilter extends org.apache.shiro.web.filter.authc.
 	protected void issueSuccessRedirect(ServletRequest request,
 			ServletResponse response) throws Exception {
 		WebUtils.issueRedirect(request, response, getSuccessUrl(), null, true);
+	}
+	
+	@Override
+	protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+		if (null != getSubject(request, response) 
+				&& getSubject(request, response).isAuthenticated()) {
+			return true;
+		}
+		return false;
 	}
 	
 	@Override
@@ -102,16 +149,14 @@ public class FormAuthenticationFilter extends org.apache.shiro.web.filter.authc.
 				log.trace("Attempting to access a path which requires authentication.  Forwarding to the "
 						+ "Authentication url [" + getLoginUrl() + "]");
 			}
-			if (!"XMLHttpRequest"
-					.equalsIgnoreCase(((HttpServletRequest) request)
-							.getHeader("X-Requested-With"))) {// 不是ajax请求
-				saveRequestAndRedirectToLogin(request, response);
-			} else {//session失效
+			if (Commons.isAjax((HttpServletRequest)request)) {//session失效
 				response.setCharacterEncoding("UTF-8");
 				response.reset();
 		        response.setContentType("application/json");
 		        response.setCharacterEncoding("utf-8");
 				response.getWriter().print(JsonMapper.toJsonString("-1"));
+			} else {// 不是ajax请求
+				saveRequestAndRedirectToLogin(request, response);
 			}
 			return false;
 		}
