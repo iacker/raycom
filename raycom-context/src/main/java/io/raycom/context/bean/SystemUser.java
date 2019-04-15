@@ -35,6 +35,7 @@ public class SystemUser implements Serializable  {
 	private String userType;// 用户类型
 	private String loginFlag;	// 是否允许登陆
 	private String photo;	// 头像
+	private String invalidLoginMsg;	// 非法登录信息
 	
 	private String loginIp;	// 最后登陆IP
 	private Date loginDate;	// 最后登陆日期
@@ -228,6 +229,14 @@ public class SystemUser implements Serializable  {
 
 	public void setUserData(RData userData) {
 		this.userData = userData;
+	}
+	
+	public String getInvalidLoginMsg() {
+		return invalidLoginMsg;
+	}
+
+	public void setInvalidLoginMsg(String invalidLoginMsg) {
+		this.invalidLoginMsg = invalidLoginMsg;
 	}
 
 	@JsonIgnore

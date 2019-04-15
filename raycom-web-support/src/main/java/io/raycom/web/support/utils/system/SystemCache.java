@@ -43,8 +43,38 @@ public class SystemCache {
 	    	
 			CacheUtils.put(Constant.SYS_DATASOURCE, dataSourceList);
 		}
-    	
-    	
+		return dataSourceList;
+	}
+	
+	/**
+	 * @return 取不到返回 new SystemUser()
+	 */
+	public static ArrayList<RData> getDynamicCorpDataSource(){
+		ArrayList<RData> dataSourceList = (ArrayList<RData>)CacheUtils.get(Constant.SYS_CORP_DATASOURCE);
+		
+		if (dataSourceList ==  null||dataSourceList.size()==0){
+			Global.setSysOrgId("1000");
+			dataSourceList = getUtilDao().getDynamicCorpDataSource();
+			Global.clearSysOrgId();
+			
+			CacheUtils.put(Constant.SYS_CORP_DATASOURCE, dataSourceList);
+		}
+		return dataSourceList;
+	}
+	
+	/**
+	 * @return 取不到返回 new SystemUser()
+	 */
+	public static ArrayList<RData> getDynamicHosDataSource(){
+		ArrayList<RData> dataSourceList = (ArrayList<RData>)CacheUtils.get(Constant.SYS_HOS_DATASOURCE);
+		
+		if (dataSourceList ==  null||dataSourceList.size()==0){
+			Global.setSysOrgId("1000");
+			dataSourceList = getUtilDao().getDynamicHosDataSource();
+			Global.clearSysOrgId();
+			
+			CacheUtils.put(Constant.SYS_HOS_DATASOURCE, dataSourceList);
+		}
 		return dataSourceList;
 	}
 	/**

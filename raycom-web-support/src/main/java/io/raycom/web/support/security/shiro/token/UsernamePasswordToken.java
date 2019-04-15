@@ -15,6 +15,7 @@ public class UsernamePasswordToken extends org.apache.shiro.authc.UsernamePasswo
 	private String captcha;
 	private boolean mobileLogin;
 	private boolean appLogin;
+	private String loginFailPath; // 登录退出低值
 	
 	public UsernamePasswordToken() {
 		super();
@@ -28,11 +29,12 @@ public class UsernamePasswordToken extends org.apache.shiro.authc.UsernamePasswo
 		this.appLogin = false;
 	}
 	public UsernamePasswordToken(String username, char[] password,
-			boolean rememberMe, String host, String captcha, boolean mobileLogin, boolean appLogin) {
+			boolean rememberMe, String host, String captcha, boolean mobileLogin, boolean appLogin,String loginFailPath) {
 		super(username, password, rememberMe, host);
 		this.captcha = captcha;
 		this.mobileLogin = mobileLogin;
 		this.appLogin = appLogin;
+		this.loginFailPath = loginFailPath;
 	}
 
 	public String getCaptcha() {
@@ -49,6 +51,14 @@ public class UsernamePasswordToken extends org.apache.shiro.authc.UsernamePasswo
 	
 	public boolean isAppLogin() {
 		return appLogin;
+	}
+
+	public String getLoginFailPath() {
+		return loginFailPath;
+	}
+
+	public void setLoginFailPath(String loginFailPath) {
+		this.loginFailPath = loginFailPath;
 	}
 	
 }

@@ -36,6 +36,8 @@ public class FormAuthenticationFilter extends org.apache.shiro.web.filter.authc.
 	public static final String DEFAULT_JWT_PARAM = "Authorization";
 	public static final String DEFAULT_HOST_PARAM = "deviceID";
 	public static final String DEFAULT_LOGIN_ORG_PARAM = "loginOrgId";
+	public static final String DEFAULT_LOGIN_FAIL_PATH_PARAM = "loginFailPath";
+
 
 	private String captchaParam = DEFAULT_CAPTCHA_PARAM;
 	private String mobileLoginParam = DEFAULT_MOBILE_PARAM;
@@ -60,9 +62,10 @@ public class FormAuthenticationFilter extends org.apache.shiro.web.filter.authc.
 			boolean rememberMe = isRememberMe(request);
 			String host = StringUtils.getRemoteAddr((HttpServletRequest)request);
 			String captcha = getCaptcha(request);
+			String loginFailPath = getLoginFailPath(request);
 			boolean mobile = isMobileLogin(request);
 			boolean appLogin = isAppLogin(request);
-			atoken =  new UsernamePasswordToken(username, password.toCharArray(), rememberMe, host, captcha, mobile,appLogin);
+			atoken =  new UsernamePasswordToken(username, password.toCharArray(), rememberMe, host, captcha, mobile,appLogin,loginFailPath);
 		}else {
 			String host = ((HttpServletRequest)request).getHeader(DEFAULT_HOST_PARAM);
 			atoken =  new JwtToken(host,jwt);
@@ -81,6 +84,10 @@ public class FormAuthenticationFilter extends org.apache.shiro.web.filter.authc.
 
 	protected String getCaptcha(ServletRequest request) {
 		return WebUtils.getCleanParam(request, getCaptchaParam());
+	}
+	
+	protected String getLoginFailPath(ServletRequest request) {
+		return WebUtils.getCleanParam(request, DEFAULT_LOGIN_FAIL_PATH_PARAM);
 	}
 	
 	protected String getSysOrgId(ServletRequest request) {

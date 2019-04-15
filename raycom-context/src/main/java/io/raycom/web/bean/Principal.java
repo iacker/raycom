@@ -21,17 +21,19 @@ public class Principal implements Serializable {
 		private String id; // 编号
 		private String loginName; // 登录名
 		private String name; // 姓名
+		private String loginFailPath; // 登录退出低值
 		private boolean mobileLogin; // 是否手机登录
 		private boolean appLogin; // 是否手机登录
 		private List<SystemRole> role; // 是否手机登录
 
-		public Principal(SystemUser user, boolean mobileLogin,List<SystemRole> role, boolean appLogin) {
+		public Principal(SystemUser user, boolean mobileLogin,List<SystemRole> role, boolean appLogin,String loginFailPath) {
 			this.id = user.getId();
 			this.loginName = user.getLoginName();
 			this.name = user.getName();
 			this.mobileLogin = mobileLogin;
 			this.appLogin = appLogin;
 			this.role = role;
+			this.loginFailPath = loginFailPath;
 		}
 
 		public List<SystemRole> getRole() {
@@ -69,6 +71,14 @@ public class Principal implements Serializable {
 
 		public void setAppLogin(boolean appLogin) {
 			this.appLogin = appLogin;
+		}
+
+		public String getLoginFailPath() {
+			return loginFailPath;
+		}
+
+		public void setLoginFailPath(String loginFailPath) {
+			this.loginFailPath = loginFailPath;
 		}
 
 		/**

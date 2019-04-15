@@ -18,6 +18,8 @@ public class RaycomEventListenerContent implements ApplicationListener<ContextRe
 
 	private HashMap<String, List<IRayComEventListener>> eventList = new HashMap<String, List<IRayComEventListener>>();
 	
+	private HashMap<String, List<IRayComSyncEventListener>> syncEeventList = new HashMap<String, List<IRayComSyncEventListener>>();
+	
 	/**
 	 * 被动注册方式，由监听器主动向容器进行注册。
 	 * 目前测试bean 容器进行遍历的方式实现注册，暂时不用该方法
@@ -36,7 +38,7 @@ public class RaycomEventListenerContent implements ApplicationListener<ContextRe
 		}
 	 } 
 	 /**
-	  * 采用bean的方式主动搜寻事件监听器,但存在一个顺序问题,即在搜索时,bean并wei创建完成,故采用主动注册的机制,暂时不做主动搜寻.
+	  * 采用bean的方式主动搜寻事件监听器,但存在一个顺序问题,即在搜索时,bean并未创建完成,故采用主动注册的机制,暂时不做主动搜寻.
 	  */
 	 public void onApplicationEvent(ContextRefreshedEvent event) {
 	        //从SPRING中得到实现了某接口的业务类  
@@ -62,18 +64,52 @@ public class RaycomEventListenerContent implements ApplicationListener<ContextRe
                     }  
                 }  
             }  
+	        
+	        Map<String,IRayComSyncEventListener> syncBeans =  event.getApplicationContext().getBeansOfType(IRayComSyncEventListener.class);  
+	        if(beans==null || beans.size()==0)  
+	            return;  
+	        //下面循环进行归类  
+	        Collection<IRayComSyncEventListener> syncServices = syncBeans.values();  
+	        for (IRayComSyncEventListener service : syncServices) {  
+	            List<String> eventClasses = service.getEventClasses();  
+	            if(eventClasses==null || eventClasses.size()==0)  
+	                continue;  
+	              
+	            for (int i = 0; i < eventClasses.size(); i++) {  
+	                List<IRayComSyncEventListener> list = syncEeventList.get(eventClasses.get(i));  
+	                if(list==null){  
+	                    list = new ArrayList<IRayComSyncEventListener>();  
+	                    syncEeventList.put(eventClasses.get(i), list);  
+	                }
+	                 
+	                if(!list.contains(service)){  
+	                        list.add(service);  
+                    }  
+                }  
+            }  
 	    } 
 	 
 	 /** 
      * 发布事件的静态方法 
      */  
-	 @Async
+	@Async
     public void publishEvent(RayComEvent event){  
         //根据实际事件名称，从eventList中找出监听了此事件的业务类，调用之  
         List<IRayComEventListener> list = eventList.get(event.getClass().getName());  
         if(list!=null && list.size()>0){  
             for (IRayComEventListener listener : list) {  
                 //此处不能捕捉异常，因为任何一个处理类实例出错都应该全部回滚  
+                listener.onRayComEvent(event);  
+            }  
+        }  
+    }  
+	
+    public void publishSyncEvent(RayComEvent event){  
+        //根据实际事件名称，从eventList中找出监听了此事件的业务类，调用之  
+        List<IRayComSyncEventListener> list = syncEeventList.get(event.getClass().getName());  
+        if(list!=null && list.size()>0){  
+            for (IRayComSyncEventListener listener : list) {  
+                //此处不能捕捉异常，因为任何一个处理类实例出错都应该全部回滚 
                 listener.onRayComEvent(event);  
             }  
         }  

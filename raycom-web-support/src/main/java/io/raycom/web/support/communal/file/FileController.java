@@ -52,7 +52,11 @@ public class FileController extends BaseController{
     @ResponseBody
 	public  RData upload(@RequestParam("file")  MultipartFile file,HttpServletResponse response ) {  
     	response.setHeader("Access-Control-Allow-Origin","*");
-		String originalFilename = file.getOriginalFilename();
+    	response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+        response.setHeader("Access-Control-Max-Age", "3600");
+        response.setHeader("Access-Control-Allow-Headers", ":x-requested-with,content-type");
+
+        String originalFilename = file.getOriginalFilename();
 	    String fileExt = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
 	    String fileName;
 	    if(rdata.containsKey("sysName"))

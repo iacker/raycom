@@ -47,5 +47,9 @@ public class Constant {
 	
 	public static final String SYS_DATASOURCE = "sysdbList_";
 	
+	public static final String SYS_CORP_DATASOURCE = "sysgroupdbList_";
+	
+	public static final String SYS_HOS_DATASOURCE = "syshosbList_";
+	
 }
  

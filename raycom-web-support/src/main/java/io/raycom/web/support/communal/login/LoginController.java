@@ -21,6 +21,7 @@ import com.google.common.collect.Maps;
 import io.raycom.common.cache.CacheUtils;
 import io.raycom.common.config.Constant;
 import io.raycom.common.config.Global;
+import io.raycom.context.bean.SystemUser;
 import io.raycom.utils.lang.CookieUtils;
 import io.raycom.utils.string.IdGen;
 import io.raycom.utils.string.StringUtils;
@@ -100,6 +101,7 @@ public class LoginController extends BaseController{
 		}
 
 		String username = WebUtils.getCleanParam(request, FormAuthenticationFilter.DEFAULT_USERNAME_PARAM);
+		String loginFailPath = WebUtils.getCleanParam(request, FormAuthenticationFilter.DEFAULT_LOGIN_FAIL_PATH_PARAM);
 		boolean rememberMe = WebUtils.isTrue(request, FormAuthenticationFilter.DEFAULT_REMEMBER_ME_PARAM);
 		boolean mobile = WebUtils.isTrue(request, FormAuthenticationFilter.DEFAULT_MOBILE_PARAM);
 		String exception = (String)request.getAttribute(FormAuthenticationFilter.DEFAULT_ERROR_KEY_ATTRIBUTE_NAME);
@@ -113,6 +115,7 @@ public class LoginController extends BaseController{
 		
 		if (StringUtils.isBlank(message) || StringUtils.equals(message, "null")){
 			message = "用户或密码错误, 请重试.";
+			request.setAttribute(FormAuthenticationFilter.DEFAULT_MESSAGE_PARAM, message);
 		}
 		
 		if (logger.isDebugEnabled()){
@@ -128,7 +131,7 @@ public class LoginController extends BaseController{
 		// 验证失败清空验证码
 		request.getSession().setAttribute(ValidateCodeServlet.VALIDATE_CODE, IdGen.uuid());
 		
-		// 如果是手机登录，则返回JSON字符串
+		//如果是手机登录，则返回JSON字符串
 		if (mobile){
 	        return renderString(response, model);
 		}
@@ -136,6 +139,17 @@ public class LoginController extends BaseController{
 			return renderString(response, UserUtils.getCache("jwt"));
 		}*/
 		
+		/**
+		 * 如果存在指定的登录路径，则跳转到指定的路径
+		 */
+		String loginFailPathSession =(String)request.getSession().getAttribute(FormAuthenticationFilter.DEFAULT_LOGIN_FAIL_PATH_PARAM);
+		if (!StringUtils.isEmpty(loginFailPath)){
+			return loginFailPath ;
+		}
+		
+		if (!StringUtils.isEmpty(loginFailPathSession)){
+			return loginFailPathSession ;
+		}
 		
 		return loginPage;
 	}
@@ -145,9 +159,9 @@ public class LoginController extends BaseController{
 	 */
 	@RequiresPermissions("user")
 	@RequestMapping(value = "${adminPath}")
-	public String index(HttpServletRequest request, HttpServletResponse response) {
+	public String index(HttpServletRequest request, HttpServletResponse response, Model model) {
 		Principal principal = UserUtils.getPrincipal();
-
+		SystemUser user = UserUtils.getUser();
 		// 登录成功后，验证码计算器清零
 		LoginValidater.isValidateCodeLogin(principal.getLoginName(), false, true);
 		
@@ -165,6 +179,17 @@ public class LoginController extends BaseController{
 				return "redirect:" + adminPath + "/login";
 			}
 		}
+		//存在非法登录信息则推出
+		if(!StringUtils.isEmpty(user.getInvalidLoginMsg())) {
+			request.setAttribute(FormAuthenticationFilter.DEFAULT_MESSAGE_PARAM, user.getInvalidLoginMsg());
+			model.addAttribute(FormAuthenticationFilter.DEFAULT_MESSAGE_PARAM, user.getInvalidLoginMsg());
+			UserUtils.getSubject().logout();
+			String loginFailPathSession = principal.getLoginFailPath();
+			if(!StringUtils.isEmpty(loginFailPathSession)) {
+				return loginFailPathSession;
+			}
+			return "redirect:" + adminPath + "/login";
+		}
 		// 如果是手机登录，则返回JSON字符串
 		if (principal.isMobileLogin()){
 				return renderString(response, principal);
@@ -172,8 +197,6 @@ public class LoginController extends BaseController{
 		if(principal.isAppLogin()) {
 			return renderString(response, UserUtils.getCache("jwt"));
 		}
-		
-		
 		return mainPage;
 	}
 

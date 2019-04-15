@@ -43,6 +43,10 @@ public interface UtilDao extends BaseDao {
 	
 	public ArrayList<RData> getDynamicDataSource();
 	
+	public ArrayList<RData> getDynamicCorpDataSource();
+	
+	public ArrayList<RData> getDynamicHosDataSource();
+	
 	
 
 }

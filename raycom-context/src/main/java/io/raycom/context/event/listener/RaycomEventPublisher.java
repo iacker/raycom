@@ -13,4 +13,8 @@ public class RaycomEventPublisher {
     	eventListenerContent.publishEvent(event);
     }  
     
+    public static void publishSyncEvent(RayComEvent event){  
+    	eventListenerContent.publishSyncEvent(event);
+    }  
+    
 }

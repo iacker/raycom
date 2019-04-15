@@ -37,12 +37,19 @@
 		<property name="filters">
             <map>
                 <entry key="authc" value-ref="formAuthenticationFilter"/>
+                <entry key="logout" value-ref="logoutFilter" />
             </map>
         </property>
 		<property name="filterChainDefinitions">
 			<ref bean="shiroFilterChainDefinitions"/>
 		</property>
 	</bean>
+	
+	<!-- 自定义登录url -->
+	<bean id="logoutFilter" class="io.raycom.web.support.security.shiro.filter.SystemLogoutFilter">
+	   <property name="redirectUrl" value="${adminPath}/login" />
+	</bean>
+
 	
 	<!--  CAS认证过滤器 
 	<bean id="casFilter" class="org.apache.shiro.cas.CasFilter">  

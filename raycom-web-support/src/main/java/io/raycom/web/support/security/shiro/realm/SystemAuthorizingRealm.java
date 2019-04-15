@@ -90,7 +90,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 				throw new AuthenticationException("msg:该帐号已禁止登录.");
 			}
 			byte[] salt = Encodes.decodeHex(user.getPassword().substring(0,16));
-			return new SimpleAuthenticationInfo(new Principal(user, token.isMobileLogin(),userRole,token.isAppLogin()), 
+			return new SimpleAuthenticationInfo(new Principal(user, token.isMobileLogin(),userRole,token.isAppLogin(),token.getLoginFailPath()), 
 					user.getPassword().substring(16), ByteSource.Util.bytes(salt), getName());
 		} else {
 			throw new AuthenticationException("msg:该用户名不存在，请确认.");
@@ -158,8 +158,8 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 			// 记录登录日志
 			Commons.getJwt();
 			
-			 //LogUtils.saveLog(Servlets.getRequest(), "系统登录");  
 			RaycomEventPublisher.publishEvent(new LoginEvent(user));
+			RaycomEventPublisher.publishSyncEvent(new LoginEvent(user));
 			RaycomEventPublisher.publishEvent(new LoginLogEvent(Servlets.getRequest()));
 			return info;
 		} else {
