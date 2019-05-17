@@ -3,6 +3,8 @@
  */
 package io.raycom.tools.file;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -35,8 +37,14 @@ public class AttachmentUtils {
 			return defaultValue;
 		else
 			return rdata.getString("fileNameOrig");
-			
 	}
+	
+	public static List<RData> getFilesOrigName(List<String> fileId){
+		RData rdata = new RData();
+		rdata.set("fileId", fileId);
+		return fileDao.getFiles(rdata);
+	}
+	
 	@Deprecated
 	public static String getFilePathById(String fileId){
 		RData rdata = new RData();

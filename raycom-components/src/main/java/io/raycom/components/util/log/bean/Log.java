@@ -29,12 +29,15 @@ public class Log extends DataEntity<Log> {
 	private Date beginDate;		// 开始日期
 	private Date endDate;		// 结束日期
 	
-	// 日志类型（1：接入日志；2：错误日志；3：rest日志；4：mq日志）
+	// 日志类型（1：接入日志；2：错误日志；3：rest日志；4：mq日志  6:短信7：邮件 8 微信）
 	public static final String TYPE_ACCESS = "1";
 	public static final String TYPE_EXCEPTION = "2";
 	public static final String TYPE_REST = "3";
 	public static final String TYPE_MQ = "4";
 	public static final String TYPE_MSG_DATA = "5";
+	public static final String TYPE_MSG_SMS = "6";
+	public static final String TYPE_MSG_MAIL = "7";
+	public static final String TYPE_MSG_MP = "8";
 	
 	public Log(){
 		super();

@@ -33,6 +33,11 @@ public class RaycomLog {
 		logdao.insert(log);
 	}
 	
+	public void insertLog(String type,String msgBean,String title,String method){
+		Log log = getLogBean(type,msgBean,title,method,"");
+		logdao.insert(log);
+	}
+	
 	/**
 	 * mq日志
 	 * @param msgBean
@@ -41,6 +46,36 @@ public class RaycomLog {
 	 */
 	public void insertMQLog(String msgBean,String title,String method){
 		Log log = getLogBean(Log.TYPE_MQ,msgBean,title,method,"");
+		logdao.insert(log);
+	}
+	/**
+	 * 邮件日志
+	 * @param msgBean
+	 * @param title
+	 * @param method
+	 */
+	public void insertMalilLog(String msgBean,String title,String method){
+		Log log = getLogBean(Log.TYPE_MSG_MAIL,msgBean,title,method,"");
+		logdao.insert(log);
+	}
+	/**
+	 * 短讯日志
+	 * @param msgBean
+	 * @param title
+	 * @param method
+	 */
+	public void insertSmsLog(String msgBean,String title,String method){
+		Log log = getLogBean(Log.TYPE_MSG_SMS,msgBean,title,method,"");
+		logdao.insert(log);
+	}
+	/**
+	 * 微信消息日志
+	 * @param msgBean
+	 * @param title
+	 * @param method
+	 */
+	public void insertMpLog(String msgBean,String title,String method){
+		Log log = getLogBean(Log.TYPE_MSG_MP,msgBean,title,method,"");
 		logdao.insert(log);
 	}
 	/**

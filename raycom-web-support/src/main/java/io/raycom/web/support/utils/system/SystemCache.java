@@ -116,12 +116,24 @@ public class SystemCache {
 	 * @return 取不到返回 new SystemUser()
 	 */
 	public static void updatetDynamicDataSource(){
-		CacheUtils.remove(Constant.SYS_DATASOURCE);
 		
+		CacheUtils.remove(Constant.SYS_DATASOURCE);
 		Global.setSysOrgId("1000");
 		ArrayList<RData> dataSourceList = getUtilDao().getDynamicDataSource();
 		Global.clearSysOrgId();
 		CacheUtils.put(Constant.SYS_DATASOURCE, dataSourceList);
+		
+		CacheUtils.remove(Constant.SYS_CORP_DATASOURCE);
+		Global.setSysOrgId("1000");
+		dataSourceList = getUtilDao().getDynamicCorpDataSource();
+		Global.clearSysOrgId();
+		CacheUtils.put(Constant.SYS_CORP_DATASOURCE, dataSourceList);
+		
+		CacheUtils.remove(Constant.SYS_HOS_DATASOURCE);
+		Global.setSysOrgId("1000");
+		dataSourceList = getUtilDao().getDynamicHosDataSource();
+		Global.clearSysOrgId();
+		CacheUtils.put(Constant.SYS_HOS_DATASOURCE, dataSourceList);
 	}
 
 	

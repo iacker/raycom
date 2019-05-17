@@ -47,4 +47,16 @@
 		 WHERE  file_id=#{fileId}
 	</select>
 	
+	<!--根据fileID获取附件信息 -->
+	<select id="getFiles" resultType="rdata" parameterType="rdata">
+		SELECT  file_id			"fileId",
+				file_name		"fileName",
+				file_size		"fileSize",
+				file_path		"filePath",
+				file_name_orig	"fileNameOrig",
+				file_dir		"fileDir"
+		  FROM 	com_file 
+		 WHERE  file_id in (#{fileId})
+	</select>
+	
 </mapper>
