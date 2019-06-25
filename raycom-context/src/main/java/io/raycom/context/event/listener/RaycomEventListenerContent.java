@@ -37,6 +37,7 @@ public class RaycomEventListenerContent implements ApplicationListener<ContextRe
 			 }
 		}
 	 } 
+	
 	 /**
 	  * 采用bean的方式主动搜寻事件监听器,但存在一个顺序问题,即在搜索时,bean并未创建完成,故采用主动注册的机制,暂时不做主动搜寻.
 	  */

@@ -3,7 +3,7 @@
   <groupId>io.raycom</groupId>
   <artifactId>raycom-build-pom</artifactId>
   <packaging>pom</packaging>
-  <version>2.0.2_20190423</version>
+  <version>3.0.0_20190624</version>
   
   <distributionManagement>
         <repository>

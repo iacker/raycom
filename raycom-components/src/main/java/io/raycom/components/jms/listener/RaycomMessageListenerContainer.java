@@ -15,9 +15,13 @@ import org.springframework.jms.connection.SingleConnectionFactory;
 import org.springframework.jms.listener.DefaultMessageListenerContainer;
 
 import io.raycom.common.config.Constant;
+import io.raycom.components.jms.bean.JmsTask;
 import io.raycom.components.jms.destination.RaycomDestinationFactory;
 import io.raycom.components.support.properties.JmsProperties;
 import io.raycom.components.util.log.RaycomLog;
+import io.raycom.context.event.listener.RaycomEventPublisher;
+import io.raycom.core.application.SpringContextHolder;
+import io.raycom.core.collection.RData;
 import io.raycom.utils.string.StringUtils;
 
 public class RaycomMessageListenerContainer extends
@@ -25,6 +29,14 @@ public class RaycomMessageListenerContainer extends
 	
 	@Autowired
 	private RaycomDestinationFactory raycomDestination;
+	
+	public String destinationName="-1";
+	
+	public String taskClassName="";
+	
+	public String destinationDesc="";
+	
+	private JmsTask task;
 	
 	@Resource(name="connectionFactory")
 	private SingleConnectionFactory connectionFactory;
@@ -48,10 +60,30 @@ public class RaycomMessageListenerContainer extends
 	}
 	
 	public void messageHandle(TextMessage message) {
+		if(task!=null) {
+			String msg="";
+		    try {
+		    	msg=message.getText();
+		    	task.messageHandle(msg);
+			} catch (JMSException e) {
+				e.printStackTrace();
+			}catch (Exception e) {
+				e.printStackTrace();
+				msgLog.insertExceptionLog(msg,destinationDesc, destinationName);
+				throw e;
+			}
+		}
 	}
 	
 	@PostConstruct
 	public void init() {
+		try {
+			if(StringUtils.isNotEmpty(taskClassName)) {
+				task = (JmsTask)SpringContextHolder.getBean(Class.forName(taskClassName));
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 		setMessageListener(this);
 		setDestination(raycomDestination.getMQQueue(getRealDestinationName()));
 		setConnectionFactory(connectionFactory);
@@ -68,7 +100,7 @@ public class RaycomMessageListenerContainer extends
 	}
 	
 	public String getDestinationName() {
-		return "-1";
+		return destinationName;
 	}
 	
 	private String getRealDestinationName() {
@@ -97,6 +129,32 @@ public class RaycomMessageListenerContainer extends
 		return stop;
 	}
 
+	public void setDestinationName(String destinationName) {
+		this.destinationName = destinationName;
+	}
 
+	public JmsTask getTask() {
+		return task;
+	}
+
+	public void setTask(JmsTask task) {
+		this.task = task;
+	}
+
+	public String getTaskClassName() {
+		return taskClassName;
+	}
+
+	public void setTaskClassName(String taskClassName) {
+		this.taskClassName = taskClassName;
+	}
+	
+	public String getDestinationDesc() {
+		return destinationDesc;
+	}
+
+	public void setDestinationDesc(String destinationDesc) {
+		this.destinationDesc = destinationDesc;
+	}
 
 }

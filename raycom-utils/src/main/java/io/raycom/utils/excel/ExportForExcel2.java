@@ -16,7 +16,7 @@ import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
-public class ExportForExcel {
+public class ExportForExcel2 {
 
 	public static void buildExcel(OutputStream os, RMultiData result, ArrayList columnName, Map headerNameMap) {
 
@@ -66,7 +66,7 @@ public class ExportForExcel {
 				}
 			}
 
-			for (int i = 0; i < result.getMaxDataCount()&&i<65535; i++) {
+			for (int i = 0; i < result.getMaxDataCount(); i++) {
 				RData data = result.getRData(i);
 				j = 0;
 				Iterator itr2 = columnName.iterator();
