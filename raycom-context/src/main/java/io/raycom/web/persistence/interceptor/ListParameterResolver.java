@@ -31,12 +31,14 @@ import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Throwables;
 
 import io.raycom.utils.lang.Reflections;
+import io.raycom.utils.string.StringUtils;
 
 /**
  * 支持参数为list的插件实现
@@ -89,7 +91,7 @@ public class ListParameterResolver implements Interceptor {
 
         rebuildBoundSql(boundSql, parameterMappings, paramPositions, paramMap,parameter);
 
-        System.out.println(boundSql.getSql());
+       // System.out.println(boundSql.getSql());
        // LOGGER.debug("rebuilded sql:{}", boundSql.getSql());
 
        // invocation.getArgs()[1] = paramMap;
@@ -130,7 +132,9 @@ public class ListParameterResolver implements Interceptor {
             newSql.append(sql.substring(++lastAppended, sqlPosition));
             //拼问号
             int count = 0;
+            String hasContent = "";
             for (Object obj : paramPosition.params) {
+            	hasContent="Y";
                 newSql.append('?').append(',');
                 String newProperty = paramPosition.paramName + count;
                 paramMap.put(newProperty, obj);
@@ -147,6 +151,24 @@ public class ListParameterResolver implements Interceptor {
                 newParameterMappings.add(npm);
                 count++;
             }
+            //如果是空list。则构造空参数
+            if(StringUtils.isEmpty(hasContent)) {
+            	newSql.append('?').append(',');
+            	 String newProperty = paramPosition.paramName + count;
+                paramMap.put(newProperty, null);
+                	
+                ParameterMapping npm = copyParameterVarcharMappingForNewProperty(
+                        paramPosition, null, newProperty);
+                
+                try {
+					Ognl.setValue(newProperty, parameter, null);
+				} catch (OgnlException e) {
+					e.printStackTrace();
+				}
+                newParameterMappings.add(npm);
+                count++;
+            }
+            
             if (newSql.charAt(newSql.length() - 1) == ',') {
                 newSql.deleteCharAt(newSql.length() - 1);
             }
@@ -212,6 +234,36 @@ public class ListParameterResolver implements Interceptor {
             return null;
         }
     }
+    private ParameterMapping copyParameterVarcharMappingForNewProperty(
+    		ListParamWrapper paramPosition, Object param, String newProperty) {
+    	try {
+    		ParameterMapping pm = paramPosition.parameterMapping;
+    		MetaObject pmmo = MetaObject.forObject(pm,DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY,DEFAULT_REFLECTOR_FACTORY);
+    		Constructor<ParameterMapping> constructor = ParameterMapping.class.getDeclaredConstructor();
+    		constructor.setAccessible(true);
+    		ParameterMapping npm = constructor.newInstance();
+    		MetaObject npmmo = MetaObject.forObject(npm,DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY,DEFAULT_REFLECTOR_FACTORY);
+    		//copy
+    		Configuration configuration = (Configuration) pmmo.getValue("configuration");
+    		npmmo.setValue("configuration", configuration);
+    		npmmo.setValue("property", newProperty);
+    		npmmo.setValue("mode", pmmo.getValue("mode"));
+    		npmmo.setValue("javaType", pmmo.getValue("javaType"));
+    		npmmo.setValue("jdbcType", JdbcType.VARCHAR);
+    		npmmo.setValue("numericScale", pmmo.getValue("numericScale"));
+    		Object typeHandler = pmmo.getValue("typeHandler");
+    		if (typeHandler == null) {
+    			typeHandler = configuration.getTypeHandlerRegistry().getTypeHandler(param.getClass());
+    		}
+    		npmmo.setValue("typeHandler", typeHandler);
+    		npmmo.setValue("resultMapId", pmmo.getValue("resultMapId"));
+    		npmmo.setValue("jdbcTypeName", pmmo.getValue("jdbcTypeName"));
+    		return npm;
+    	} catch (Exception e) {
+    		Throwables.propagate(e);
+    		return null;
+    	}
+    }
 
     private List<ListParamWrapper> buildListParameterPositions(BoundSql boundSql,
                                                                List<ParameterMapping> parameterMappings,
@@ -233,6 +285,26 @@ public class ListParameterResolver implements Interceptor {
             if (value instanceof Iterable) {
                 //找到第i+1个?的位置修改SQL
                 iterable = (Iterable<?>) value;
+                
+                //如果list是空的 ，则初始化未空string数组
+                String hasContent = "";
+                for (Object obj : iterable) {
+                	hasContent="Y";
+                	break;
+                }
+                if(StringUtils.isEmpty(hasContent)) {
+                	iterable = new AbstractList<Object>() {
+                		String[] array = {};
+
+                        @Override public Object get(int index) {
+                            return array[index];
+                        }
+
+                        @Override public int size() {
+                            return array.length;
+                        }
+                    };
+                }
             } else {
                 iterable = new AbstractList<Object>() {
                     Object[] array = (Object[]) value;

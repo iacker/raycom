@@ -4,6 +4,7 @@
 package io.raycom.common.mapper;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
@@ -13,10 +14,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonParser.Feature;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -28,6 +32,8 @@ import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import io.raycom.core.collection.RData;
 
 /**
  * 简单封装Jackson，实现JSON String<->Java Object的Mapper.
@@ -44,9 +50,54 @@ public class JsonMapper extends ObjectMapper {
 	private static JsonMapper mapper;
 
 	public JsonMapper() {
-		this(Include.NON_NULL);
+		this(Include.USE_DEFAULTS);
 	}
 
+	/**
+	 * 将json字符串转化为RDATA对象，rdata中的数组转为为ArrayList<RData>对象
+	 * @param jsonStr
+	 * @return
+	 */
+	public static RData parseObject(String jsonStr) {
+		RData jsonData = new RData();
+		try {
+			jsonData = parseJson(JSON.parseObject(jsonStr));
+		} catch (Exception e) {
+			try {
+				jsonData = parseJsonArray(JSON.parseArray(jsonStr));
+			} catch (Exception e1) {
+				
+			}
+		}
+		
+		return jsonData;
+	}
+	
+	private static RData parseJsonArray(JSONArray jsonObject) {
+		RData jsonData = new RData();
+    	ArrayList<RData> jsonList = new ArrayList<RData>();
+    	 (jsonObject).forEach(item->jsonList.add(parseJson((JSONObject)item)));
+    	 jsonData.put("root", jsonList);
+		return jsonData;
+	}
+	
+	private static RData parseJson(JSONObject jsonObject) {
+		RData jsonData = new RData();
+		jsonObject.forEach((k,v)->{
+			// 这里的key 是通过匿名变量 命名的
+			if(v instanceof JSONArray) {
+				ArrayList<RData> jsonList = new ArrayList<RData>();
+				((JSONArray) v).forEach(item->{
+					jsonList.add(parseJson((JSONObject)item));
+				});
+				jsonData.put(k, jsonList);
+			}else  if(v instanceof String) {
+				jsonData.put(k, v);
+			}
+		});
+		return jsonData;
+	}
+	
 	public JsonMapper(Include include) {
 		// 设置输出时包含属性的风格
 		if (include != null) {

@@ -42,7 +42,7 @@
 		<commons-fileupload.version>1.4</commons-fileupload.version>
 		<commons-beanutils.version>1.9.3</commons-beanutils.version>
 		<jackson.version>2.9.8</jackson.version>
-		<fastjson.version>1.2.31</fastjson.version>
+		<fastjson.version>1.2.59</fastjson.version>
 		<xstream.version>1.4.11.1</xstream.version>
 		<guava.version>27.1-jre</guava.version>
 		<dozer.version>5.5.1</dozer.version>
@@ -602,11 +602,12 @@
 		<!-- GENERAL UTILS end -->
 		
 		<!-- TEST begin -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.13-beta-3</version>
-		</dependency>
+		 <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.5</version>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
@@ -672,16 +673,16 @@
 			<artifactId>javax.jms-api</artifactId>
 			<version>2.0.1</version>
 		</dependency>
-	 <dependency>
-          <groupId>org.apache.geronimo.specs</groupId>
-          <artifactId>geronimo-j2ee-management_1.1_spec</artifactId>
-          <version>1.0.1</version>
-             </dependency>
-	 <dependency>
+	 	<dependency>
+	        <groupId>org.apache.geronimo.specs</groupId>
+	        <artifactId>geronimo-j2ee-management_1.1_spec</artifactId>
+	        <version>1.0.1</version>
+        </dependency>
+	 	<dependency>
           <groupId>org.fusesource.hawtbuf</groupId>
           <artifactId>hawtbuf</artifactId>
           <version>1.11</version>
-          </dependency>
+         </dependency>
 		<!-- JMS END -->
 		<!-- cxf Start -->
 		<dependency>
@@ -742,6 +743,26 @@
 		   <artifactId>java-sdk</artifactId>
 		   <version>4.11.0</version>
 		 </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.11</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+            <version>9.3.7.v20160115</version>
+        </dependency>
 	</dependencies>
 	
 	 

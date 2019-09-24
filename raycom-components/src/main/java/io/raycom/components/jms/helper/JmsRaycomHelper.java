@@ -16,7 +16,7 @@ public class JmsRaycomHelper{
 	
 	private static JmsRaycomTemple getJmsRaycomTemple(){
 		if (jmsRaycomTemple ==  null){
-			jmsRaycomTemple = SpringContextHolder.getBean("jmsTemplate");
+			jmsRaycomTemple = SpringContextHolder.getBean(JmsRaycomTemple.class);
 		}
 		return jmsRaycomTemple;
 	}

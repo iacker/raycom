@@ -103,6 +103,8 @@
 		<property name="testWhileIdle" value="true" />
 		<property name="testOnBorrow" value="false" />
 		<property name="testOnReturn" value="false" />
+		<!--removeAbandonedTimeout: 超时时间(以秒数为单位)-->  
+		<property name="removeAbandonedTimeout" value="1800" />
 		
 		<!-- 打开PSCache，并且指定每个连接上PSCache的大小（Oracle使用） -->
 		<property name="poolPreparedStatements" value="true" />

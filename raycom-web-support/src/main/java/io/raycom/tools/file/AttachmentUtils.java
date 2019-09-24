@@ -3,6 +3,7 @@
  */
 package io.raycom.tools.file;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -41,8 +42,16 @@ public class AttachmentUtils {
 	
 	public static List<RData> getFilesOrigName(List<String> fileId){
 		RData rdata = new RData();
-		rdata.set("fileId", fileId);
-		return fileDao.getFiles(rdata);
+		List<RData> fileList = new ArrayList<RData>();
+		int i  = 0;
+		while(fileId!=null&&i<fileId.size()) {
+			int toIndex = (i+1000)>fileId.size()?fileId.size():(i+1000);
+			rdata.set("fileId", fileId.subList(i, toIndex));
+			fileList.addAll(fileDao.getFiles(rdata));
+			i=toIndex;
+		}
+		
+		return fileList;
 	}
 	
 	@Deprecated
