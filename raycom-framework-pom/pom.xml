@@ -41,7 +41,7 @@
 		<commons-codec.version>1.12</commons-codec.version>
 		<commons-fileupload.version>1.4</commons-fileupload.version>
 		<commons-beanutils.version>1.9.3</commons-beanutils.version>
-		<jackson.version>2.9.8</jackson.version>
+		<jackson.version>2.10.0</jackson.version>
 		<fastjson.version>1.2.59</fastjson.version>
 		<xstream.version>1.4.11.1</xstream.version>
 		<guava.version>27.1-jre</guava.version>
